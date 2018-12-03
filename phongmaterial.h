@@ -15,6 +15,8 @@ class PhongMaterial:public Material
 public:
 	PhongMaterial();
 	PhongMaterial( Color _diffuse,  Color specular, float _shininess);
+	PhongMaterial(Color _diffuse, Color _specular, float _shininess, float _reflectiveness);
+
 	virtual~PhongMaterial();
 	virtual Color sample(const CRay&_ray, const GVector3 &_position,  GVector3&_normal);
 private:

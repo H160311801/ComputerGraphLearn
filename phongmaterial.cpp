@@ -11,7 +11,14 @@ PhongMaterial::PhongMaterial( Color  _diffuse,  Color  _specular,  float _shinin
 	shininess = _shininess;
 
 }
+PhongMaterial::PhongMaterial(Color _diffuse, Color _specular, float _shininess, float _reflectiveness)  {
 
+	diffuse = _diffuse;
+	specular = _specular;
+	shininess = _shininess;
+	reflectiveness = _reflectiveness;
+
+};
 PhongMaterial::~PhongMaterial()
 {
 }
