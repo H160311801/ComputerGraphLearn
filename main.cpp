@@ -241,6 +241,78 @@ void renderUnion()
 
 
 }
+
+Color rayTraceRecursive(CObject* _object, CRay& _ray, long _maxReflection)
+{
+	IntersectResult result = _object->isIntersected(_ray);
+	if (result.isHit)
+	{
+		float reflectiveness = result.object->material->getReflec();
+		Color color = result.object->material->sample(_ray, result.position, result.normal);
+		color = color.multiply(1 - reflectiveness);
+		if (reflectiveness > 0 && _maxReflection > 0)
+		{
+			GVector3 refle_directon = result.normal*(-2 * result.normal.dotMul(_ray.getDirection()));
+			CRay refle_ray = CRay(result.position, refle_directon);
+			Color reflectedColor = rayTraceRecursive(_object, refle_ray, _maxReflection - 1);
+			color = color.add(reflectedColor.multiply(reflectiveness));
+		}
+		return color;
+	}
+	else return Color::black();
+
+}
+void renderRecursive()
+{
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glLoadIdentity();
+	glTranslatef(-0.5f, -0.5f, -1.0f);
+	glPointSize(2.0f);
+
+	PerspectiveCamera camera(GVector3(0, 10, 10), GVector3(0, -0.5, -1), GVector3(0, 1, 0), 90);
+	Plane* plane1 = new Plane(GVector3(0, 1, 0), 1.0);
+	CSphere* sphere1 = new CSphere(GVector3(-2, 5, -10), 5.0);
+	CSphere* sphere2 = new CSphere(GVector3(5, 5, -10), 3.0);
+
+	plane1->material = new CheckerMaterial(0.1f,0.5f);
+	sphere1->material = new PhongMaterial(Color::green(), Color::white(), 16,0.25f);
+	sphere2->material = new PhongMaterial(Color::blue(), Color::white(), 16,0.25f);
+
+	Union scence;
+	scence.push(plane1);
+	scence.push(sphere1);
+	scence.push(sphere2);
+
+	long maxDepth = 20;
+	long maxReflect = 5;
+	float dx = 1.0f / WINDOW_WIDTH;
+	float dy = 1.0f / WINDOW_HEIGHT;
+	float dDeep = 255.0f / maxDepth;
+	glBegin(GL_POINTS);
+	for (long y = 0; y < WINDOW_HEIGHT; y++)
+	{
+		float sy = 1 - dy * y;
+		for (long x = 0; x < WINDOW_WIDTH; x++)
+		{
+
+			float sx = 1 - dx * x;
+			CRay ray(camera.generateRay(sx, sy));
+			IntersectResult result = scence.isIntersected(ray);
+			if (result.isHit)
+			{
+				
+				Color color = rayTraceRecursive(&scence, ray, maxReflect);
+				//Color color = result.object->material->sample(ray, result.position, result.normal);
+				color.saturate();
+				//color.show();
+				glColor3ub(color.R * 255, color.G * 255, color.B * 255);
+				glVertex2f(sx, sy);
+			}
+		}
+	}
+	glEnd();
+	glFlush();
+}
 void windowChangeSize(GLsizei w,GLsizei h)
 {
 	if (h == 0) h = 1;
@@ -281,7 +353,8 @@ int main(int argc,char*argv[]) {
 	//glutDisplayFunc(display);
 	
 	//glutDisplayFunc(renderDepth2);
-	glutDisplayFunc(renderUnion);
+	//glutDisplayFunc(renderUnion);
+	glutDisplayFunc(renderRecursive);
 	glutReshapeFunc(windowChangeSize2);
 	glutMainLoop();
 	return 0;
