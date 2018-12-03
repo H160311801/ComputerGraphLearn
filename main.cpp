@@ -10,7 +10,8 @@
 #include"phongmaterial.h"
 #include"checkermaterial.h"
 #include"union.h"
-
+#include"directlight.h"
+#include<time.h>
 const int  WINDOW_WIDTH=800;
 const int  WINDOW_HEIGHT=800;
 
@@ -313,6 +314,71 @@ void renderRecursive()
 	glEnd();
 	glFlush();
 }
+
+void renderLight()
+{
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glLoadIdentity();
+	glTranslatef(-0.5f, -0.5f, -1.0f);
+	glPointSize(2.0f);
+
+	Union scene;
+	PerspectiveCamera camera(GVector3(0, 10, 10), GVector3(0, 0, -1), GVector3(0, 1, 0), 90);
+	Plane*plane1 = new Plane(GVector3(0, 1, 0), 0.0);
+	Plane*plane2 = new Plane(GVector3(0, 0, 1), -50);
+	Plane*plane3 = new Plane(GVector3(1, 0, 0), -20);
+	CSphere* sphere1 = new CSphere(GVector3(0, 10, -10), 10.0);
+
+	plane1->material = new CheckerMaterial(0.1f, 0.5f);
+//	plane2->material = new CheckerMaterial(0.1f, 0.5f);
+//	plane3->material = new CheckerMaterial(0.1f, 0.5f);
+	
+	sphere1->material = new PhongMaterial(Color::green(), Color::white(), 5, 0.25f);
+	
+	DirectLight light1(Color::white().multiply(0.5), GVector3(-1.75, -2, -1.5), true);
+
+	scene.push(plane1);
+	scene.push(plane2);
+	scene.push(plane3);
+	scene.push(sphere1);
+	long maxDepth = 20;
+	long maxReflect = 5;
+	float dx = 1.0f / WINDOW_WIDTH;
+	float dy = 1.0f / WINDOW_HEIGHT;
+	float dD = 255.0f / maxDepth;
+
+	time_t timeBegin, timeEnd;
+	timeBegin = time(NULL);
+	glBegin(GL_POINTS);
+	for (long y = 0; y < WINDOW_HEIGHT; ++y)
+	{
+		float sy = 1 - dy * y;
+		for (long x = 0; x < WINDOW_WIDTH; ++x)
+		{
+			float sx = dx * x;
+			CRay ray(camera.generateRay(sx, sy));
+			IntersectResult result = scene.isIntersected(ray);
+
+			if (result.isHit)
+			{
+				Color color = rayTraceRecursive(&scene, ray, maxReflect);
+				//Color color2= light1.intersect(scene, result);
+				//Color color = color1.add(color2);
+				/*pixelColor = SDL_MapRGB(screen->format, std::min(color.r * 255, (float)255), std::min(color.g * 255, (float)255.0), std::min(color.b * 255, (float)255.0));
+				drawPixel(screen, x, y, pixelColor);*/
+				color.saturate();
+				//color.show();
+				glColor3ub(color.R * 255, color.G * 255, color.B * 255);
+				glVertex2f(sx, sy);
+			}
+		}
+	}
+	glEnd();
+	glFlush();
+	timeEnd = time(NULL);
+	cout << "ÓÃÊ±£º" << timeEnd - timeBegin << endl;
+
+}
 void windowChangeSize(GLsizei w,GLsizei h)
 {
 	if (h == 0) h = 1;
@@ -354,7 +420,8 @@ int main(int argc,char*argv[]) {
 	
 	//glutDisplayFunc(renderDepth2);
 	//glutDisplayFunc(renderUnion);
-	glutDisplayFunc(renderRecursive);
+	//glutDisplayFunc(renderRecursive);
+	glutDisplayFunc(renderLight);
 	glutReshapeFunc(windowChangeSize2);
 	glutMainLoop();
 	return 0;

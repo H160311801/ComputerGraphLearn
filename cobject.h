@@ -8,7 +8,7 @@
 class CObject
 {
 public:
-	Material*material=NULL;
+	Material*material=new Material(0.2f);
 	CObject();
 	virtual~CObject();
 	void setKa(GVector3 _Ka);
