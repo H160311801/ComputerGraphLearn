@@ -25,11 +25,11 @@ public:
 	virtual IntersectResult isIntersected(CRay& _ray);
 
 protected:
-	GVector3 m_Ka;
-	GVector3 m_Kd;
-	GVector3 m_Ks;
-	double Shininess;
-	double Reflectivity;
+	GVector3 m_Ka;//物体表面环境光反射系数
+	GVector3 m_Kd;//漫反射系数
+	GVector3 m_Ks;//镜面反射系数
+	double Shininess;//镜面反射强度
+	double Reflectivity;//环境反射强度
 	
 };
 #endif // !COBJECT_H

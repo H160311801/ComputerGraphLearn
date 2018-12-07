@@ -127,6 +127,7 @@
     <ClCompile Include="perspectiveCamera.cpp" />
     <ClCompile Include="phongmaterial.cpp" />
     <ClCompile Include="plane.cpp" />
+    <ClCompile Include="PointLight.cpp" />
     <ClCompile Include="union.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -142,6 +143,7 @@
     <ClInclude Include="perspectiveCamera.h" />
     <ClInclude Include="phongmaterial.h" />
     <ClInclude Include="plane.h" />
+    <ClInclude Include="PointLight.h" />
     <ClInclude Include="union.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
