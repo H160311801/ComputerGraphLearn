@@ -120,12 +120,15 @@
     <ClCompile Include="color.cpp" />
     <ClCompile Include="CRay.cpp" />
     <ClCompile Include="CSphere.cpp" />
+    <ClCompile Include="directlight.cpp" />
     <ClCompile Include="gvector3.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="material.cpp" />
     <ClCompile Include="perspectiveCamera.cpp" />
     <ClCompile Include="phongmaterial.cpp" />
     <ClCompile Include="plane.cpp" />
+    <ClCompile Include="PointLight.cpp" />
+    <ClCompile Include="triangle.cpp" />
     <ClCompile Include="union.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -134,12 +137,15 @@
     <ClInclude Include="color.h" />
     <ClInclude Include="CRay.h" />
     <ClInclude Include="CSphere.h" />
+    <ClInclude Include="directlight.h" />
     <ClInclude Include="gvector3.h" />
     <ClInclude Include="IntersectResult.h" />
     <ClInclude Include="material.h" />
     <ClInclude Include="perspectiveCamera.h" />
     <ClInclude Include="phongmaterial.h" />
     <ClInclude Include="plane.h" />
+    <ClInclude Include="PointLight.h" />
+    <ClInclude Include="triangle.h" />
     <ClInclude Include="union.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

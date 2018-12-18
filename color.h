@@ -17,7 +17,9 @@ public:
 	Color(float _R, float _G, float _B);
 	Color add(const Color& c);
 	Color multiply(float s)const;
+	Color divide(float s)const;
 	Color modulate(const Color&c)const;
+	Color normalize();
 	void saturate();
 	void show();
 	virtual ~Color();
