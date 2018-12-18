@@ -21,9 +21,20 @@ Color Color::multiply(float s) const
 	return Color(R*s,G*s,B*s);
 }
 
+Color Color::divide(float s) const
+{
+	return Color(R/s, G/s, B/s);
+}
+
 Color Color::modulate(const Color & c) const
 {
 	return Color(R*c.R,G*c.G,B*c.B);
+}
+
+Color Color::normalize()
+{
+	float sum = R + G + B;
+	return Color(R/sum,G/sum,B/sum);
 }
 
 void Color::saturate()

@@ -25,7 +25,5 @@ Material::~Material()
 
 Color Material::sample(const CRay & _ray, const GVector3& _position,  GVector3 & _normal)
 {
-	//return Color();
-	cout << "Base sample" << endl;
-	return Color();
+	return Color::white();
 }

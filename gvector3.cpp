@@ -41,6 +41,16 @@ GVector3 GVector3::operator/(float n)
 	return GVector3(x/n,y/n,z/n);
 }
 
+bool GVector3::operator==(GVector3 v)
+{
+	if(this->x!=v.x)
+	return false;
+	else if (this->y != v.y) return false;
+	else if (this->z != v.z) return false;
+
+	return true;
+}
+
 
 
 float GVector3::dotMul(GVector3 v2)

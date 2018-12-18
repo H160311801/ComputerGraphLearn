@@ -51,6 +51,15 @@
     <ClCompile Include="union.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="directlight.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="PointLight.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="triangle.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="gvector3.h">
@@ -87,6 +96,15 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="union.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="directlight.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="PointLight.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="triangle.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
