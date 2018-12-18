@@ -24,6 +24,7 @@ public:
 	GVector3 operator-(GVector3 v);
 	GVector3 operator*(float n);
 	GVector3 operator/(float n);
+	bool operator==(GVector3 v);
 
 	float dotMul(GVector3 v2);//向量点积
 	GVector3 crossMul(GVector3 v2);//叉乘

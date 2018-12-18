@@ -3,6 +3,7 @@
 #include<stdio.h>
 #include"CRay.h"
 #include"CSphere.h"
+#include"triangle.h"
 #include"IntersectResult.h"
 #include"perspectiveCamera.h"
 #include"plane.h"
@@ -70,6 +71,46 @@ void display()
 	glFlush();
 }
 
+void renderTriangle()
+{
+	int WW = 800, HH = 800;
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glLoadIdentity();                                   // Reset The View
+	glTranslatef(-0.5f, -0.5f, -1.0f);
+	glPointSize(2.0);
+	float horiz = 0.0;
+	float dep = 10;
+	PerspectiveCamera camera(GVector3(horiz, 0, dep), GVector3(0, 0, -1), GVector3(0, 1, 0), 90);
+	long maxDepth = 18;
+	//CSphere* sphere1 = new CSphere(GVector3(0, 0, -10), 10.0);
+	Triangle* triangle = new Triangle(GVector3(0,0,-10),  GVector3(4,-5,0),GVector3(-4, -5, 0));
+	float dx = 1.0f / WW;
+	float dy = 1.0f / HH;
+	float dD = 255.0f / maxDepth;//»Ò½×£¬255--0£¬ºÚ---°×
+	glBegin(GL_POINTS);
+	for (long y = 0; y < HH; ++y)
+	{
+		float sy = 1 - dy * y;
+		for (long x = 0; x < WW; ++x)
+		{
+			float sx = dx * x;
+			CRay ray(camera.generateRay(sx, sy));
+			//IntersectResult result = sphere1->isIntersected(ray);
+			IntersectResult result = triangle->isIntersected(ray);
+			if (result.isHit)
+			{
+				double t = MIN(result.distance*dD, 255.0f);
+				int depth = (int)(255 - t);
+				glColor3ub(depth, depth, depth);
+				glVertex2f(sx, sy);
+			}
+
+		}
+	}
+
+	glEnd();
+	glFlush();
+}
 void renderDepth()
 {
 	int WW = 800, HH = 800;
@@ -506,7 +547,8 @@ int main(int argc,char*argv[]) {
 	//glutDisplayFunc(renderUnion);
 	//glutDisplayFunc(renderRecursive);
 	//glutDisplayFunc(renderLight);
-	glutDisplayFunc(renderPointLight);
+	//glutDisplayFunc(renderPointLight);
+	glutDisplayFunc(renderTriangle);
 	glutReshapeFunc(windowChangeSize2);
 	glutMainLoop();
 	return 0;
