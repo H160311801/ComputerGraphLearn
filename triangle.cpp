@@ -4,7 +4,7 @@ Triangle::Triangle()
 {
 }
 
-Triangle::Triangle(GVector3 _A, GVector3 _B, GVector3 _C)
+Triangle::Triangle(const GVector3& _A, const GVector3& _B, const GVector3& _C)
 {
 	vertexA = _A;
 	vertexB = _B;
@@ -12,7 +12,7 @@ Triangle::Triangle(GVector3 _A, GVector3 _B, GVector3 _C)
 	normal = (vertexB - vertexA).crossMul(vertexC - vertexA);
 }
 
-Triangle::Triangle(GVector3 _A, GVector3 _B, GVector3 _C, GVector3 _N)
+Triangle::Triangle(const GVector3& _A, const GVector3& _B, const GVector3& _C, const GVector3& _N)
 {
 	vertexA = _A;
 	vertexB = _B;
@@ -75,4 +75,9 @@ IntersectResult Triangle::isIntersected(CRay & _ray)
 	result.object = this;
 		return  result;
 
+}
+
+void Triangle::setNormal(const GVector3 & nvec)
+{
+	normal = nvec;
 }

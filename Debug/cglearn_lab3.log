@@ -1,2 +1,12 @@
 ﻿  main.cpp
-  cglearn_lab3.vcxproj -> C:\Users\YZT\source\repos\cglearn_lab3\Debug\cglearn_lab3.exe
+c:\users\nero\source\repos\computergraphlearn\main.cpp(182): warning C4305: 'argument': truncation from 'double' to 'float'
+c:\users\nero\source\repos\computergraphlearn\main.cpp(204): warning C4244: 'argument': conversion from 'float' to 'GLubyte', possible loss of data
+c:\users\nero\source\repos\computergraphlearn\main.cpp(245): warning C4244: 'argument': conversion from 'float' to 'GLubyte', possible loss of data
+c:\users\nero\source\repos\computergraphlearn\main.cpp(296): warning C4244: 'argument': conversion from 'float' to 'GLubyte', possible loss of data
+c:\users\nero\source\repos\computergraphlearn\main.cpp(371): warning C4244: 'argument': conversion from 'float' to 'GLubyte', possible loss of data
+c:\users\nero\source\repos\computergraphlearn\main.cpp(398): warning C4305: 'argument': truncation from 'double' to 'float'
+c:\users\nero\source\repos\computergraphlearn\main.cpp(399): warning C4305: 'argument': truncation from 'double' to 'float'
+c:\users\nero\source\repos\computergraphlearn\main.cpp(400): warning C4305: 'argument': truncation from 'double' to 'float'
+c:\users\nero\source\repos\computergraphlearn\main.cpp(445): warning C4244: 'argument': conversion from 'float' to 'GLubyte', possible loss of data
+c:\users\nero\source\repos\computergraphlearn\main.cpp(521): warning C4244: 'argument': conversion from 'float' to 'GLubyte', possible loss of data
+  cglearn_lab3.vcxproj -> C:\Users\Nero\source\repos\ComputerGraphLearn\Debug\cglearn_lab3.exe

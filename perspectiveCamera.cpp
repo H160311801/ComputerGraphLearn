@@ -14,15 +14,17 @@ PerspectiveCamera::PerspectiveCamera(const GVector3 & _eye, const GVector3 & _fr
 	front = _front;
 	refup = _refup;
 	fov = _fov;
+
 	right = front.crossMul(refup);
-	right.getInfo();
+	//right.getInfo();
 	//right = refup;
 	up = right.crossMul(front);
 	fovScale = tan(fov*(3.14159*0.5f / 180))*2;
+	//fovScale = tan(fov*(PI*0.5f / 180)) * front.getLength();
+
 	front.getInfo();
 	right.getInfo();
 	up.getInfo();
-	//fovScale = tan(fov*(PI*0.5f / 180)) * front.getLength();
 }
 
 CRay PerspectiveCamera::generateRay(float x, float y)

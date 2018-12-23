@@ -60,6 +60,9 @@
     <ClCompile Include="triangle.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="ObjLoader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="gvector3.h">
@@ -107,5 +110,14 @@
     <ClInclude Include="triangle.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="timeCount.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjLoader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>

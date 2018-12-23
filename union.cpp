@@ -15,7 +15,7 @@ void Union::push(CObject * _object)
 
 IntersectResult Union::isIntersected(CRay & _ray)
 {
-	const float Infinity = 1e30;
+	const float Infinity = 1e30f;
 	float minDistance = Infinity;
 	IntersectResult minResult = IntersectResult::noHit();
 	long size = this->cobjects.size();
