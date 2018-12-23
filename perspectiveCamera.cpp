@@ -19,6 +19,10 @@ PerspectiveCamera::PerspectiveCamera(const GVector3 & _eye, const GVector3 & _fr
 	//right.getInfo();
 	//right = refup;
 	up = right.crossMul(front);
+
+	//cout << "RefUp: " << refup << " Up: " << up << endl;
+	//cout << "Is equal? (up and refup)" << (up == refup) << endl;
+
 	fovScale = tan(fov*(3.14159*0.5f / 180))*2;
 	//fovScale = tan(fov*(PI*0.5f / 180)) * front.getLength();
 

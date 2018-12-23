@@ -6,6 +6,9 @@ Union::Union()
 
 Union::~Union()
 {
+	for (int i = 0; i < cobjects.size(); ++i) {
+		delete cobjects[i];
+	}
 }
 
 void Union::push(CObject * _object)

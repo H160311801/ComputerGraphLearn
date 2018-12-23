@@ -23,24 +23,138 @@ const int WINDOW_WIDTH=800;
 const int WINDOW_HEIGHT=800;
 
 namespace SceneToRender {
+	const float horiz = 0.0;
+	const float dep = 10;
+	const int maxDepth = 25;
+
+	const float dx = 1.0f / WINDOW_WIDTH;
+	const float dy = 1.0f / WINDOW_HEIGHT;
+	const float dD = 255.0f / maxDepth;//»Ò½×£¬255--0£¬ºÚ---°×
+
 	CObject* scene = nullptr;
+	PerspectiveCamera camera(GVector3(horiz, 0, dep), GVector3(0, 0, -1), GVector3(0, 1, 0), 90);
+	//PerspectiveCamera camera(GVector3(-10, -10, -10), GVector3(1, 1, 1), GVector3(1, 0, 0), 90);
+
 	void initWithModel() {
-		const string path = "1.obj";
-		scene = new ObjLoader(path);
+		const string path = "test.obj";
+		ObjLoader *ob = new ObjLoader(path);
+		//sphere1->material = new PhongMaterial(Color::green(), Color::white(), 16);
+		ob->setMaterial(new PhongMaterial(Color::green(), Color::red(), 2, 0.25f));
+		scene = ob;
 	}
 
 	void initWithSphere();
 	void initWithTriangle();
 	void initWithTwoSphere();
 
-	void destroy() {
-		if (scene != nullptr) delete scene;
+	void destroyIfUsed() {
+		if (scene != nullptr) { 
+			delete scene;
+			scene = nullptr;
+		}
+	}
+
+	void initWithSphere()
+	{
+		destroyIfUsed();
+		CSphere* sphere1 = new CSphere(GVector3(0, 0, -10), 10.0);
+		sphere1->material = (new PhongMaterial(Color::green(), Color::blue(), 0.5f, 0.25f));
+		scene = sphere1;
+	}
+
+	void initWithTriangle()
+	{
+		destroyIfUsed();
+		Triangle* triangle = new Triangle(GVector3(0,0,-10),  GVector3(4,-5,0), GVector3(-4, -5, 0));
+		//Triangle* triangle = new Triangle(GVector3(-4, -5, 0),  GVector3(4,-5,0), GVector3(0, 0, -10));
+		triangle->material = (new PhongMaterial(Color::green(), Color::blue(), 0.5f, 0.25f));
+		scene = triangle;
+	}
+
+	void initWithTwoSphere()
+	{
+		destroyIfUsed();
+
+		Plane* plane1 = new Plane(GVector3(0, 1, 0), 1.0);
+		CSphere* sphere1 = new CSphere(GVector3(-2, 5, -10), 5.0);
+		CSphere* sphere2 = new CSphere(GVector3(5, 5, -10), 3.0);
+
+		plane1->material = new CheckerMaterial(0.1f);
+		sphere1->material = new PhongMaterial(Color::green(), Color::white(), 16);
+		sphere2->material = new PhongMaterial(Color::blue(), Color::white(), 16);
+
+		Union *_union = new Union();
+		_union->push(plane1);
+		_union->push(sphere1);
+		_union->push(sphere2);
+
+		scene = _union;
+	}
+
+	void MyGlRenderModel() {
+		glBegin(GL_POINTS);
+		for (long y = 0; y < WINDOW_HEIGHT; ++y)
+		{
+			float sy = 1 - dy * y;
+			for (long x = 0; x < WINDOW_WIDTH; ++x)
+			{
+				float sx = dx * x;
+				CRay ray(camera.generateRay(sx, sy));
+				IntersectResult result = scene->isIntersected(ray);
+				if (result.isHit)
+				{
+					//cout << "distance of result = " << result.distance << endl;
+					//float t = MIN(result.distance*dD, 255.0f);
+					//int depth = (int)(255.0f - t);
+					//glColor3ub(depth, depth, depth);
+					//glVertex2f(sx, sy);
+
+					Color color = result.object->material->sample(ray, result.position, result.normal);
+					color.saturate();
+					glColor3ub(color.R * 255, color.G * 255, color.B * 255);
+					glVertex2f(sx, sy);
+				}
+			}
+		}
+		glEnd();
+		glFlush();
+	}
+
+	void MyGlRenderGray() {
+		glBegin(GL_POINTS);
+		for (long y = 0; y < WINDOW_HEIGHT; ++y)
+		{
+			float sy = 1 - dy * y;
+			for (long x = 0; x < WINDOW_WIDTH; ++x)
+			{
+				float sx = dx * x;
+				CRay ray(camera.generateRay(sx, sy));
+				IntersectResult result = scene->isIntersected(ray);
+				if (result.isHit)
+				{
+					float t = MIN(result.distance*dD, 255.0f);
+					int depth = (int)(255.0f - t);
+					glColor3ub(depth, depth, depth);
+					glVertex2f(sx, sy);
+				}
+			}
+		}
+		glEnd();
+		glFlush();
 	}
 
 	void renderModel() {
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glLoadIdentity();                                   // Reset The View
+		glTranslatef(-0.5f, -0.5f, -1.0f);
+		glPointSize(2.0);
+		//PerspectiveCamera camera(GVector3(horiz, 0, dep), GVector3(0, 0, -1), GVector3(0, 1, 0), 90);
+		//PerspectiveCamera camera(GVector3(1, 1, 1), GVector3(-1, -1, -1), GVector3(0, 1, 0), 90);
 
+		MyTimeCount::countTime(false);
+		MyGlRenderModel();
+		MyTimeCount::countTime(true);
 	}
-
 }
 
 
@@ -115,6 +229,7 @@ void renderTriangle()
 	long maxDepth = 18;
 	//CSphere* sphere1 = new CSphere(GVector3(0, 0, -10), 10.0);
 	Triangle* triangle = new Triangle(GVector3(0,0,-10),  GVector3(4,-5,0),GVector3(-4, -5, 0));
+	triangle->material = new PhongMaterial(Color::green(), Color::white(), 5, 0.25f);
 	//Triangle* triangle = new Triangle(GVector3(-4,5,0),  GVector3(4,-5,0),GVector3(0,0,-10));
 	float dx = 1.0f / WW;
 	float dy = 1.0f / HH;
@@ -133,9 +248,14 @@ void renderTriangle()
 			IntersectResult result = triangle->isIntersected(ray);
 			if (result.isHit)
 			{
-				double t = MIN(result.distance*dD, 255.0f);
-				int depth = (int)(255 - t);
-				glColor3ub(depth, depth, depth);
+				//double t = MIN(result.distance*dD, 255.0f);
+				//int depth = (int)(255 - t);
+				//glColor3ub(depth, depth, depth);
+				//glVertex2f(sx, sy);
+
+				Color color = result.object->material->sample(ray, result.position, result.normal);
+				color.saturate();
+				glColor3ub(color.R * 255, color.G * 255, color.B * 255);
 				glVertex2f(sx, sy);
 			}
 
@@ -612,7 +732,14 @@ int main(int argc,char*argv[]) {
 	//glutDisplayFunc(renderRecursive);
 	//glutDisplayFunc(renderLight);
 	//glutDisplayFunc(renderPointLight);
-	glutDisplayFunc(renderTriangle);
+	//glutDisplayFunc(renderTriangle);
+
+
+	//SceneToRender::initWithModel();
+	//SceneToRender::initWithTriangle();
+	SceneToRender::initWithSphere();
+
+	glutDisplayFunc(SceneToRender::renderModel);
 
 	glutReshapeFunc(windowChangeSize2);
 	glutMainLoop();

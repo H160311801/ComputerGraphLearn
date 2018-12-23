@@ -48,4 +48,12 @@ IntersectResult ObjLoader::isIntersected(CRay & _ray)
 	return minResult;
 }
 
+void ObjLoader::setMaterial(Material * material)
+{
+	int size = fSet.size();
+	for (int i = 0; i < size; i++) {
+		fSet[i].material = material;
+	}
+}
+
 

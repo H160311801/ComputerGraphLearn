@@ -7,6 +7,7 @@
 //#include "union.h"
 #include "cobject.h"
 #include "triangle.h"
+#include "material.h"
 
 using namespace std;
 
@@ -24,6 +25,8 @@ public:
 	//Vertex getFocus();
 
 	virtual IntersectResult isIntersected(CRay &_ray);
+
+	void setMaterial(Material* material);
 
 private:
 	vector<Vertex> vSet;

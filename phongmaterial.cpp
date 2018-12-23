@@ -64,6 +64,7 @@ Color PhongMaterial::sample(const CRay & _ray, const GVector3 & _position, GVect
 	Color specularTerm = this->specular.multiply(pow(std::max(NdotH, (float)0), this->shininess));
 	
 	Color dif_spec = LightColor.modulate(diffuseTerm.add(specularTerm));
-	Color ambient = LightColor.modulate(Ka);
-	return dif_spec.add(ambient);
+	//Color ambient = LightColor.modulate(Ka);
+	//return dif_spec.add(ambient);
+	return dif_spec;
 }
