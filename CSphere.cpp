@@ -47,7 +47,7 @@ IntersectResult CSphere::isIntersected(CRay& _ray)
 	GVector3 v = _ray.getOrigin() - center;
 	float a =(float)( v.dotMul(v) - radius * radius);
 	float DdotV = _ray.getDirection().dotMul(v);
-	result.object = this;
+	result.object = NULL;
 
 	if (DdotV <= 0)
 	{

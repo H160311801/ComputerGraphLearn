@@ -1,12 +1,14 @@
 ﻿  main.cpp
-c:\users\nero\source\repos\computergraphlearn\main.cpp(182): warning C4305: 'argument': truncation from 'double' to 'float'
-c:\users\nero\source\repos\computergraphlearn\main.cpp(204): warning C4244: 'argument': conversion from 'float' to 'GLubyte', possible loss of data
-c:\users\nero\source\repos\computergraphlearn\main.cpp(245): warning C4244: 'argument': conversion from 'float' to 'GLubyte', possible loss of data
-c:\users\nero\source\repos\computergraphlearn\main.cpp(296): warning C4244: 'argument': conversion from 'float' to 'GLubyte', possible loss of data
-c:\users\nero\source\repos\computergraphlearn\main.cpp(371): warning C4244: 'argument': conversion from 'float' to 'GLubyte', possible loss of data
-c:\users\nero\source\repos\computergraphlearn\main.cpp(398): warning C4305: 'argument': truncation from 'double' to 'float'
-c:\users\nero\source\repos\computergraphlearn\main.cpp(399): warning C4305: 'argument': truncation from 'double' to 'float'
-c:\users\nero\source\repos\computergraphlearn\main.cpp(400): warning C4305: 'argument': truncation from 'double' to 'float'
-c:\users\nero\source\repos\computergraphlearn\main.cpp(445): warning C4244: 'argument': conversion from 'float' to 'GLubyte', possible loss of data
-c:\users\nero\source\repos\computergraphlearn\main.cpp(521): warning C4244: 'argument': conversion from 'float' to 'GLubyte', possible loss of data
-  cglearn_lab3.vcxproj -> C:\Users\Nero\source\repos\ComputerGraphLearn\Debug\cglearn_lab3.exe
+c:\users\yzt\source\repos\cglearn_lab3\cglearn_lab3\phongmaterial.h(14): warning C4305: “参数”: 从“double”到“float”截断
+c:\users\yzt\source\repos\cglearn_lab3\cglearn_lab3\main.cpp(140): warning C4305: “参数”: 从“double”到“float”截断
+c:\users\yzt\source\repos\cglearn_lab3\cglearn_lab3\main.cpp(171): warning C4305: “参数”: 从“double”到“float”截断
+c:\users\yzt\source\repos\cglearn_lab3\cglearn_lab3\main.cpp(263): warning C4244: “参数”: 从“float”转换到“GLubyte”，可能丢失数据
+c:\users\yzt\source\repos\cglearn_lab3\cglearn_lab3\main.cpp(320): warning C4244: “参数”: 从“double”转换到“GLfloat”，可能丢失数据
+c:\users\yzt\source\repos\cglearn_lab3\cglearn_lab3\main.cpp(354): warning C4244: “参数”: 从“double”转换到“GLfloat”，可能丢失数据
+c:\users\yzt\source\repos\cglearn_lab3\cglearn_lab3\main.cpp(378): warning C4244: “参数”: 从“double”转换到“GLfloat”，可能丢失数据
+c:\users\yzt\source\repos\cglearn_lab3\cglearn_lab3\main.cpp(533): warning C4244: “参数”: 从“float”转换到“GLubyte”，可能丢失数据
+c:\users\yzt\source\repos\cglearn_lab3\cglearn_lab3\main.cpp(603): warning C4305: “参数”: 从“double”到“float”截断
+c:\users\yzt\source\repos\cglearn_lab3\cglearn_lab3\main.cpp(625): warning C4244: “参数”: 从“float”转换到“GLubyte”，可能丢失数据
+c:\users\yzt\source\repos\cglearn_lab3\cglearn_lab3\main.cpp(666): warning C4244: “参数”: 从“float”转换到“GLubyte”，可能丢失数据
+c:\users\yzt\source\repos\cglearn_lab3\cglearn_lab3\main.cpp(717): warning C4244: “参数”: 从“float”转换到“GLubyte”，可能丢失数据
+  cglearn_lab3.vcxproj -> C:\Users\YZT\source\repos\cglearn_lab3\Debug\cglearn_lab3.exe

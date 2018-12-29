@@ -14,5 +14,6 @@ public:
 	CheckerMaterial(float _scale, float _reflectiveness = 0);
 	virtual~CheckerMaterial();
 	virtual Color sample(const CRay& _ray, const GVector3& _position,  GVector3& _normal);
+	virtual Color sample(const CRay & _ray, const CRay _lightray, const GVector3 & _position, GVector3 & _normal);
 };
 #endif // !CHECKERMATERIAL_H

@@ -10,8 +10,10 @@ class PointLight
 public:
 	PointLight();
 	PointLight(Color _color, GVector3 _position, bool _isShadow);
+	GVector3 getPosition();
 	virtual ~PointLight();
-	Color intersect(Union &scence, IntersectResult &result);
+	//Color intersect(Union* scence, IntersectResult &result);
+	Color intersect(CObject* scence, IntersectResult &result);
 protected:
 private:
 	bool isShadow;

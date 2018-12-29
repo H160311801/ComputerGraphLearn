@@ -1,4 +1,4 @@
-#include <cstdlib>
+Ôªø#include <cstdlib>
 #include<gl/glut.h>
 #include <cstdio>
 #include <ctime>
@@ -26,27 +26,44 @@ namespace SceneToRender {
 	const float horiz = 0.0;
 	const float dep = 10;
 	const int maxDepth = 25;
+	const int maxReflect = 5;
 
 	const float dx = 1.0f / WINDOW_WIDTH;
 	const float dy = 1.0f / WINDOW_HEIGHT;
-	const float dD = 255.0f / maxDepth;//ª“Ω◊£¨255--0£¨∫⁄---∞◊
+	const float dD = 255.0f / maxDepth;//ÁÅ∞Èò∂Ôºå255--0ÔºåÈªë---ÁôΩ
 
 	CObject* scene = nullptr;
-	PerspectiveCamera camera(GVector3(horiz, 0, dep), GVector3(0, 0, -1), GVector3(0, 1, 0), 90);
-	//PerspectiveCamera camera(GVector3(-10, -10, -10), GVector3(1, 1, 1), GVector3(1, 0, 0), 90);
+	//PerspectiveCamera camera(GVector3(horiz, 0, dep), GVector3(0, 0, -1), GVector3(0, 1, 0), 90);
+	PerspectiveCamera camera(GVector3(-10, -5, -10), GVector3(1, 1, 1), GVector3(0, 0, 1), 90);
+	//PointLight light2(Color::white().multiply(3), GVector3(10, 20, 10), true);
+	PointLight light2(Color::white().multiply(3), GVector3(-10, -10, -10), true);
 
 	void initWithModel() {
-		const string path = "test.obj";
+		const string path = "0.obj";
 		ObjLoader *ob = new ObjLoader(path);
 		//sphere1->material = new PhongMaterial(Color::green(), Color::white(), 16);
-		ob->setMaterial(new PhongMaterial(Color::green(), Color::red(), 2, 0.25f));
-		scene = ob;
+		ob->setMaterial(new PhongMaterial(Color::green(), Color::white(), 16, 0.25f));
+
+		Triangle* triangle1 = new Triangle(GVector3(100, 100, 50), GVector3(-100, -100, 50), GVector3(100, -100, 50));
+		Triangle* triangle2 = new Triangle(GVector3(100, 100, 50), GVector3(-100, 100, 50), GVector3(-100, -100, 50));
+		//triangle1->material = (new PhongMaterial(Color(5,2,3), Color::white(), 16, 0.1f));
+		triangle1->material = (new PhongMaterial(Color(5, 2, 3), Color::white(), 16, 0.25f));
+		triangle2->material = (new PhongMaterial(Color(5,2,3), Color::white(), 16, 0.25f));
+		Union* _union = new Union();
+		_union->push(ob);
+		_union->push(triangle1);
+		_union->push(triangle2);
+		scene = _union;
 	}
 
 	void initWithSphere();
 	void initWithTriangle();
 	void initWithTwoSphere();
-
+	void initWith4Triangle();
+	void MyGlRenderGray();
+	void MyGlRenderModel();
+	void MyGlRenderModelwithPointLight();
+	void MyGlRenderModelwithRayTrace();
 	void destroyIfUsed() {
 		if (scene != nullptr) { 
 			delete scene;
@@ -57,17 +74,18 @@ namespace SceneToRender {
 	void initWithSphere()
 	{
 		destroyIfUsed();
-		CSphere* sphere1 = new CSphere(GVector3(0, 0, -10), 10.0);
-		sphere1->material = (new PhongMaterial(Color::green(), Color::blue(), 0.5f, 0.25f));
+		CSphere* sphere1 = new CSphere(GVector3(0, 0, -10),5.0 );
+		sphere1->material = (new PhongMaterial(Color::red(), Color::white(), 16, 0.25f));
 		scene = sphere1;
 	}
 
 	void initWithTriangle()
 	{
 		destroyIfUsed();
-		Triangle* triangle = new Triangle(GVector3(0,0,-10),  GVector3(4,-5,0), GVector3(-4, -5, 0));
-		//Triangle* triangle = new Triangle(GVector3(-4, -5, 0),  GVector3(4,-5,0), GVector3(0, 0, -10));
-		triangle->material = (new PhongMaterial(Color::green(), Color::blue(), 0.5f, 0.25f));
+		//Triangle* triangle = new Triangle(GVector3(0,0,-10),  GVector3(4,-5,0), GVector3(-4, -5, 0));
+		//Triangle* triangle = new Triangle(GVector3(0, 0, 0), GVector3(4, -5, 0), GVector3(-4, -5, 0));
+		Triangle* triangle = new Triangle(GVector3(-4, -5, 0),  GVector3(4,-5,0), GVector3(0, 0, -10));
+		triangle->material = (new PhongMaterial(Color::green(), Color::blue(), 16, 0.25f));
 		scene = triangle;
 	}
 
@@ -75,22 +93,163 @@ namespace SceneToRender {
 	{
 		destroyIfUsed();
 
-		Plane* plane1 = new Plane(GVector3(0, 1, 0), 1.0);
+
+		Triangle* triangle = new Triangle(GVector3(0, 100, -60), GVector3(100, -100, -60), GVector3(-100, -100, -60));
+		triangle->material = (new PhongMaterial(Color::white(), Color::white(), 16, 0.25f));
+		//Plane* plane1 = new Plane(GVector3(0, 1, 0), 1.0);
 		CSphere* sphere1 = new CSphere(GVector3(-2, 5, -10), 5.0);
 		CSphere* sphere2 = new CSphere(GVector3(5, 5, -10), 3.0);
+		CSphere* sphere3 = new CSphere(GVector3(0,0,-40), 20.0);
 
-		plane1->material = new CheckerMaterial(0.1f);
-		sphere1->material = new PhongMaterial(Color::green(), Color::white(), 16);
-		sphere2->material = new PhongMaterial(Color::blue(), Color::white(), 16);
+		//plane1->material = new CheckerMaterial(0.1f);
+		//sphere1->material = new PhongMaterial(Color::green(), Color::white(), 16);
+		//sphere2->material = new PhongMaterial(Color::blue(), Color::white(), 16);
+		sphere1->material = new PhongMaterial(Color::green(), Color::white(), 16,0.25f);
+		sphere2->material = new PhongMaterial(Color::blue(), Color::white(), 16,0.25f);
+		sphere3->material = new PhongMaterial(Color::red(), Color::white(), 16, 0.25f);
 
 		Union *_union = new Union();
-		_union->push(plane1);
+		//_union->push(plane1);
 		_union->push(sphere1);
 		_union->push(sphere2);
+		_union->push(sphere3);
+		_union->push(triangle);
 
 		scene = _union;
 	}
+	void initWith4Triangle()
+	{
+		destroyIfUsed();
+		//Triangle* triangle = new Triangle(GVector3(0,0,-10),  GVector3(4,-5,0), GVector3(-4, -5, 0));
+		//Triangle* triangle = new Triangle(GVector3(0, 0, 0), GVector3(4, -5, 0), GVector3(-4, -5, 0));
+		Triangle* triangle1 = new Triangle(GVector3(0, 0, 0), GVector3(10, 0, 0), GVector3(0, 10, 0));
+		Triangle* triangle2 = new Triangle(GVector3(0, 0, 0), GVector3(0, 0, 10), GVector3(10, 0, 0));
+		Triangle* triangle3 = new Triangle(GVector3(0, 0, 0), GVector3(0, 10, 0), GVector3(0, 0, 10));
+		Triangle* triangle4 = new Triangle(GVector3(10, 0, 0), GVector3(0, 0, 10), GVector3(0, 10, 0));
+		triangle1->material = (new PhongMaterial(Color::green(), Color::blue(), 16, 0.25f));
+		triangle2->material = (new PhongMaterial(Color::green(), Color::blue(), 16, 0.25f));
+		triangle3->material = (new PhongMaterial(Color::green(), Color::blue(), 16, 0.25f));
+		triangle4->material = (new PhongMaterial(Color::green(), Color::blue(), 16, 0.25f));
+		Union *_union = new Union();
 
+		_union->push(triangle1);
+		_union->push(triangle2);
+		_union->push(triangle3);
+		_union->push(triangle4);
+		scene = _union;
+	}
+
+
+	Color phongcalculate( CRay& _eyesray, CRay& _lightray, IntersectResult &_result)
+	{
+		CObject* _object = _result.object;
+		GVector3 _position = _result.position;
+		GVector3 _normal = _result.normal;
+
+		Color LightStrong = light2.intersect(scene, _result);
+		Color EnvironmentLight = Color(0.05, 0.05, 0.05);
+		
+		GVector3 lightdir = _lightray.getDirection().normalize();
+		GVector3 ag_lightdir = lightdir * -1;
+
+		
+		//Êº´ÂèçÂ∞Ñdiffuse = Id‚Ä¢Kd‚Ä¢ (N‚Ä¢L)
+		float NdotL = _normal.dotMul(ag_lightdir);
+		Color diffuseTerm = _object->material->diffuse.multiply(std::max(NdotL, 0.0f));
+
+		//Áâ©‰ΩìÈïúÈù¢ÂèçÂ∞Ñspecular = Is‚Ä¢Ks‚Ä¢ (V¬∑R)^n
+		//R = 2(L‚Ä¢N)‚Ä¢N-L
+		//VÊòØÁõ∏Êú∫ÊñπÂêëÂêëÈáèÔºåRÊòØÂèçÂ∞ÑÂêëÈáèÔºå¬≠n¬≠Â∞±ÂèçÂ∞ÑÂº∫Â∫¶Shininess
+		/*‰∏∫‰∫ÜÊèêÈ´òËÆ°ÁÆóÊïàÁéáÔºå‰πüÂèØ‰ª•Âà©Áî®HalfVectorHÊù•ËÆ°ÁÆóÈïúÈù¢ÂèçÂ∞Ñ„ÄÇ
+		specular = Is‚Ä¢Ks‚Ä¢(N‚Ä¢H)^n
+		ÂÖ∂‰∏≠H = (L + V) / 2
+		*/
+
+		GVector3 eyesdir = _eyesray.getDirection().normalize()*-1.0;
+		GVector3 H = (ag_lightdir + eyesdir).normalize();
+		float NdotH = _normal.dotMul(H);
+		Color specularTerm = _object->material->specular.multiply(pow(std::max(NdotH, (float)0), _object->material->shininess));
+
+		Color dif_spec = LightStrong.modulate(diffuseTerm.add(specularTerm));
+		Color ambient = EnvironmentLight.modulate(_object->material->Ka);
+		return dif_spec.add(ambient);
+	}
+
+	Color phongcalculate(CObject* _object, CRay& _eyesray, CRay& _lightray, GVector3 _position, GVector3 _normal, Color LightColor)
+	{
+		
+		Color EnvironmentLight = Color(0.05, 0.05, 0.05);
+		//Êº´ÂèçÂ∞Ñdiffuse = Id‚Ä¢Kd‚Ä¢ (N‚Ä¢L)
+		GVector3 lightdir = _lightray.getDirection().normalize()*-1.0;
+		GVector3 eyesdir = _eyesray.getDirection().normalize()*-1.0;
+		float NdotL = _normal.dotMul(lightdir);
+		Color diffuseTerm = _object->material->diffuse.multiply(std::max(NdotL, 0.0f));
+
+		//Áâ©‰ΩìÈïúÈù¢ÂèçÂ∞Ñspecular = Is‚Ä¢Ks‚Ä¢ (V¬∑R)^n
+		//R = 2(L‚Ä¢N)‚Ä¢N-L
+		//VÊòØÁõ∏Êú∫ÊñπÂêëÂêëÈáèÔºåRÊòØÂèçÂ∞ÑÂêëÈáèÔºå¬≠n¬≠Â∞±ÂèçÂ∞ÑÂº∫Â∫¶Shininess
+		/*‰∏∫‰∫ÜÊèêÈ´òËÆ°ÁÆóÊïàÁéáÔºå‰πüÂèØ‰ª•Âà©Áî®HalfVectorHÊù•ËÆ°ÁÆóÈïúÈù¢ÂèçÂ∞Ñ„ÄÇ
+		specular = Is‚Ä¢Ks‚Ä¢(N‚Ä¢H)^n
+		ÂÖ∂‰∏≠H = (L + V) / 2
+		*/
+
+
+		GVector3 H = (lightdir - eyesdir).normalize();
+		float NdotH = _normal.dotMul(H);
+		Color specularTerm = _object->material->specular.multiply(pow(std::max(NdotH, (float)0), _object->material->shininess));
+
+		Color dif_spec = LightColor.modulate(diffuseTerm.add(specularTerm));
+		Color ambient = EnvironmentLight.modulate(_object->material->Ka);
+		return dif_spec.add(ambient);
+	}
+
+	Color rayTraceRecursive(CObject* _object, CRay& _ray, int _maxReflection)
+	{
+		IntersectResult result = _object->isIntersected(_ray);
+		if (result.isHit)
+		{
+			float reflectiveness = result.object->material->getReflec();
+			Color color = result.object->material->sample(_ray, result.position, result.normal);
+			color = color.multiply(1 - reflectiveness);
+			if (reflectiveness > 0 && _maxReflection > 0)
+			{
+				GVector3 refle_directon = result.normal*(-2 * result.normal.dotMul(_ray.getDirection()));
+				CRay refle_ray = CRay(result.position, refle_directon);
+				Color reflectedColor = rayTraceRecursive(_object, refle_ray, _maxReflection - 1);
+				color = color.add(reflectedColor.multiply(reflectiveness));
+			}
+			return color;
+		}
+		else return Color::black();
+
+	}
+
+	Color rayTraceRecursive_NEW(CObject* _object, CRay& _ray,int _maxReflection)
+	{
+		IntersectResult result = _object->isIntersected(_ray);
+		if (result.isHit)
+		{
+			CRay LightRay = CRay(result.position, result.position - light2.getPosition());
+			//Color PhongColor = result.object->material->sample(_ray, result.position, result.normal);
+			Color PhongColor = phongcalculate(_ray, LightRay, result);
+
+			Color AllColor;
+			float reflectiveness = result.object->material->getReflec();
+			PhongColor = PhongColor.multiply(1 - reflectiveness);
+
+			if (reflectiveness > 0 && _maxReflection > 0)
+			{
+				GVector3 refle_directon = result.normal*(-2 * result.normal.dotMul(_ray.getDirection()));
+				CRay ReflecRay = CRay(result.position, refle_directon);
+				Color reflectedColor = rayTraceRecursive_NEW(_object, ReflecRay, _maxReflection - 1);
+
+				AllColor = PhongColor.add(reflectedColor.multiply(reflectiveness));
+			}
+			return AllColor;
+		}
+		else return Color::black();
+
+	}
 	void MyGlRenderModel() {
 		glBegin(GL_POINTS);
 		for (long y = 0; y < WINDOW_HEIGHT; ++y)
@@ -143,6 +302,110 @@ namespace SceneToRender {
 		glFlush();
 	}
 
+	void MyGlRenderModelwithPointLight()
+	{
+		glBegin(GL_POINTS);
+		for (long y = 0; y < WINDOW_HEIGHT; ++y)
+		{
+			float sy = 1 - dy * y;
+			//double sy = 1 - dy * y;
+			for (long x = 0; x < WINDOW_WIDTH; ++x)
+			{
+				float sx = dx * x;
+				//double sx = dx * x;
+				CRay ray(camera.generateRay(sx, sy));
+				IntersectResult result = scene->isIntersected(ray);
+
+				if (result.isHit)
+				{
+					Color resultcolor;
+					////Color color1 = rayTraceRecursive(scene, ray, maxReflect);
+					//Color lightShadowstrong = light2.intersect(scene, result);
+					//resultcolor = lightShadowstrong;
+					//CRay lightray = CRay(result.position, result.position - light2.getPosition());
+					//resultcolor = phongcalculate(result.object, ray, lightray, result.position, result.normal, lightShadowstrong);
+					CRay lightray = CRay(result.position, result.position - light2.getPosition());
+					resultcolor = phongcalculate(ray, lightray,result);
+					resultcolor.saturate();
+					glColor3f(resultcolor.R * 255.0, resultcolor.G * 255.0, resultcolor.B * 255.0);
+					glVertex2f(sx, sy);
+				}
+			}
+		}
+		glEnd();
+		glFlush();
+	}
+	void MyGlRenderModelwithRayTrace()
+	{
+		glBegin(GL_POINTS);
+		for (long y = 0; y < WINDOW_HEIGHT; ++y)
+		{
+			float sy = 1 - dy * y;
+			//double sy = 1 - dy * y;
+			for (long x = 0; x < WINDOW_WIDTH; ++x)
+			{
+				float sx = dx * x;
+				//double sx = dx * x;
+				CRay ray(camera.generateRay(sx, sy));
+				IntersectResult result = scene->isIntersected(ray);
+
+				if (result.isHit)
+				{
+					Color resultcolor;
+					Color lightShadowstrong = light2.intersect(scene, result);
+					resultcolor = lightShadowstrong;
+					CRay lightray = CRay(result.position, result.position - light2.getPosition());
+					resultcolor = phongcalculate(result.object, ray, lightray, result.position, result.normal, lightShadowstrong);
+
+					Color color1 = rayTraceRecursive(scene, ray, maxReflect);
+					resultcolor.add(color1);
+
+					resultcolor.saturate();
+					glColor3f(resultcolor.R * 255.0, resultcolor.G * 255.0, resultcolor.B * 255.0);
+					glVertex2f(sx, sy);
+				}
+			}
+		}
+		glEnd();
+		glFlush();
+	}
+	void MyGlRenderModelwithRayTrace_NEW() {
+		glBegin(GL_POINTS);
+		for (long y = 0; y < WINDOW_HEIGHT; ++y)
+		{
+			float sy = 1 - dy * y;
+			//double sy = 1 - dy * y;
+			for (long x = 0; x < WINDOW_WIDTH; ++x)
+			{
+				float sx = dx * x;
+				//double sx = dx * x;
+				CRay ray(camera.generateRay(sx, sy));
+				IntersectResult result = scene->isIntersected(ray);
+
+				if (result.isHit)
+				{
+					Color resultcolor = rayTraceRecursive_NEW(scene, ray, maxReflect);
+					glColor3f(resultcolor.R * 255.0, resultcolor.G * 255.0, resultcolor.B * 255.0);
+					glVertex2f(sx, sy);
+				}
+			}
+		}
+		glEnd();
+		glFlush();
+	}
+
+	void renderGray()
+	{
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glLoadIdentity();                                   // Reset The View
+		glTranslatef(-0.5f, -0.5f, -1.0f);
+		glPointSize(2.0);
+		
+
+		MyTimeCount::countTime(false);
+		MyGlRenderGray();
+		MyTimeCount::countTime(true);
+	}
 	void renderModel() {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glLoadIdentity();                                   // Reset The View
@@ -155,6 +418,28 @@ namespace SceneToRender {
 		MyGlRenderModel();
 		MyTimeCount::countTime(true);
 	}
+	void renderModelwithPointLight()
+	{
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glLoadIdentity();                                  
+		glTranslatef(-0.5f, -0.5f, -1.0f);
+		glPointSize(2.0);
+
+		MyTimeCount::countTime(false);
+		MyGlRenderModelwithPointLight();
+		MyTimeCount::countTime(true);
+	}
+	void renderModelwithRayTrace() 
+	{
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glLoadIdentity();
+		glTranslatef(-0.5f, -0.5f, -1.0f);
+		glPointSize(2.0);
+
+		MyTimeCount::countTime(false);
+		MyGlRenderModelwithRayTrace_NEW();
+		MyTimeCount::countTime(true);
+	}
 }
 
 
@@ -163,18 +448,18 @@ void initScene(int w, int h)
 	glutInitDisplayMode(GLUT_DEPTH);
 	glutInitWindowSize(w, h);
 	glutCreateWindow("cglearn_lab3");
-	// set up viewing GL_PROJECTION Õ∂”∞, GL_MODELVIEW ƒ£–Õ ”Õº, GL_TEXTURE Œ∆¿Ì.
+	// set up viewing GL_PROJECTION ÊäïÂΩ±, GL_MODELVIEW Ê®°ÂûãËßÜÂõæ, GL_TEXTURE Á∫πÁêÜ.
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	//gluOrtho2D(0.0, 10000, 0.0, 1000);//ø…º˚◊¯±Í∑∂Œß
+	//gluOrtho2D(0.0, 10000, 0.0, 1000);//ÂèØËßÅÂùêÊ†áËåÉÂõ¥
 
 
-	glShadeModel(GL_SMOOTH);//∆Ù”√“ı”∞∆Ωª¨
-	glClearColor(0, 0, 0, 0);//±≥æ∞∫⁄…´
-	glClearDepth(1.0);//…Ë÷√…Ó∂»ª∫¥Ê
-	glEnable(GL_DEPTH_TEST);//∆Ù”√…Ó∂»≤‚ ‘
-	glDepthFunc(GL_LEQUAL);//À˘◊˜…Ó∂»≤‚ ‘µƒ¿‡–Õ
-	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);//∏ÊÀﬂœµÕ≥∂‘Õ∏ ”Ω¯–––ﬁ’˝
+	glShadeModel(GL_SMOOTH);//ÂêØÁî®Èò¥ÂΩ±Âπ≥Êªë
+	glClearColor(0, 0, 0, 0);//ËÉåÊôØÈªëËâ≤
+	glClearDepth(1.0);//ËÆæÁΩÆÊ∑±Â∫¶ÁºìÂ≠ò
+	glEnable(GL_DEPTH_TEST);//ÂêØÁî®Ê∑±Â∫¶ÊµãËØï
+	glDepthFunc(GL_LEQUAL);//ÊâÄ‰ΩúÊ∑±Â∫¶ÊµãËØïÁöÑÁ±ªÂûã
+	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);//ÂëäËØâÁ≥ªÁªüÂØπÈÄèËßÜËøõË°å‰øÆÊ≠£
 }
 
 void display()
@@ -187,7 +472,7 @@ void display()
 	long maxDepth = 20;
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
-	//Ω´‘≠µ„“∆∂ØµΩ◊Ûœ¬Ω«
+	//Â∞ÜÂéüÁÇπÁßªÂä®Âà∞Â∑¶‰∏ãËßí
 	glTranslatef(-0.5f, -0.5f, -1.0f);
 	glPointSize(2.0);
 	glBegin(GL_POINTS);
@@ -233,7 +518,7 @@ void renderTriangle()
 	//Triangle* triangle = new Triangle(GVector3(-4,5,0),  GVector3(4,-5,0),GVector3(0,0,-10));
 	float dx = 1.0f / WW;
 	float dy = 1.0f / HH;
-	float dD = 255.0f / maxDepth;//ª“Ω◊£¨255--0£¨∫⁄---∞◊
+	float dD = 255.0f / maxDepth;//ÁÅ∞Èò∂Ôºå255--0ÔºåÈªë---ÁôΩ
 
 	
 	glBegin(GL_POINTS);
@@ -283,7 +568,7 @@ void renderDepth()
 
 	float dx = 1.0f / WW;
 	float dy = 1.0f / HH;
-	float dD = 255.0f / maxDepth;//ª“Ω◊£¨255--0£¨∫⁄---∞◊
+	float dD = 255.0f / maxDepth;//ÁÅ∞Èò∂Ôºå255--0ÔºåÈªë---ÁôΩ
 
 	glBegin(GL_POINTS);
 	for (long y = 0; y < HH; ++y)
@@ -450,236 +735,236 @@ void renderUnion()
 
 }
 
-Color rayTraceRecursive(CObject* _object, CRay& _ray, long _maxReflection)
-{
-	IntersectResult result = _object->isIntersected(_ray);
-	if (result.isHit)
-	{
-		float reflectiveness = result.object->material->getReflec();
-		Color color = result.object->material->sample(_ray, result.position, result.normal);
-		color = color.multiply(1 - reflectiveness);
-		if (reflectiveness > 0 && _maxReflection > 0)
-		{
-			GVector3 refle_directon = result.normal*(-2 * result.normal.dotMul(_ray.getDirection()));
-			CRay refle_ray = CRay(result.position, refle_directon);
-			Color reflectedColor = rayTraceRecursive(_object, refle_ray, _maxReflection - 1);
-			color = color.add(reflectedColor.multiply(reflectiveness));
-		}
-		return color;
-	}
-	else return Color::black();
+//Color rayTraceRecursive(CObject* _object, CRay& _ray, int _maxReflection)
+//{
+//	IntersectResult result = _object->isIntersected(_ray);
+//	if (result.isHit)
+//	{
+//		float reflectiveness = result.object->material->getReflec();
+//		Color color = result.object->material->sample(_ray, result.position, result.normal);
+//		color = color.multiply(1 - reflectiveness);
+//		if (reflectiveness > 0 && _maxReflection > 0)
+//		{
+//			GVector3 refle_directon = result.normal*(-2 * result.normal.dotMul(_ray.getDirection()));
+//			CRay refle_ray = CRay(result.position, refle_directon);
+//			Color reflectedColor = rayTraceRecursive(_object, refle_ray, _maxReflection - 1);
+//			color = color.add(reflectedColor.multiply(reflectiveness));
+//		}
+//		return color;
+//	}
+//	else return Color::black();
+//
+//}
 
-}
+//void renderRecursive()
+//{
+//	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+//	glLoadIdentity();
+//	glTranslatef(-0.5f, -0.5f, -1.0f);
+//	glPointSize(2.0f);
+//
+//	PerspectiveCamera camera(GVector3(0, 10, 10), GVector3(0, -0.5, -1), GVector3(0, 1, 0), 90);
+//	Plane* plane1 = new Plane(GVector3(0, 1, 0), 1.0);
+//	CSphere* sphere1 = new CSphere(GVector3(-2, 5, -10), 5.0);
+//	CSphere* sphere2 = new CSphere(GVector3(5, 5, -10), 3.0);
+//
+//	plane1->material = new CheckerMaterial(0.1f,0.5f);
+//	sphere1->material = new PhongMaterial(Color::green(), Color::white(), 16,0.25f);
+//	sphere2->material = new PhongMaterial(Color::blue(), Color::white(), 16,0.25f);
+//
+//	Union scence;
+//	scence.push(plane1);
+//	scence.push(sphere1);
+//	scence.push(sphere2);
+//
+//	long maxDepth = 20;
+//	long maxReflect = 5;
+//	float dx = 1.0f / WINDOW_WIDTH;
+//	float dy = 1.0f / WINDOW_HEIGHT;
+//	float dDeep = 255.0f / maxDepth;
+//	glBegin(GL_POINTS);
+//	for (long y = 0; y < WINDOW_HEIGHT; y++)
+//	{
+//		float sy = 1 - dy * y;
+//		for (long x = 0; x < WINDOW_WIDTH; x++)
+//		{
+//
+//			float sx = 1 - dx * x;
+//			CRay ray(camera.generateRay(sx, sy));
+//			IntersectResult result = scence.isIntersected(ray);
+//			if (result.isHit)
+//			{
+//				
+//				Color color = rayTraceRecursive(&scence, ray, maxReflect);
+//				//Color color = result.object->material->sample(ray, result.position, result.normal);
+//				color.saturate();
+//				//color.show();
+//				glColor3ub(color.R * 255, color.G * 255, color.B * 255);
+//				glVertex2f(sx, sy);
+//			}
+//		}
+//	}
+//	glEnd();
+//	glFlush();
+//}
 
-void renderRecursive()
-{
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glLoadIdentity();
-	glTranslatef(-0.5f, -0.5f, -1.0f);
-	glPointSize(2.0f);
-
-	PerspectiveCamera camera(GVector3(0, 10, 10), GVector3(0, -0.5, -1), GVector3(0, 1, 0), 90);
-	Plane* plane1 = new Plane(GVector3(0, 1, 0), 1.0);
-	CSphere* sphere1 = new CSphere(GVector3(-2, 5, -10), 5.0);
-	CSphere* sphere2 = new CSphere(GVector3(5, 5, -10), 3.0);
-
-	plane1->material = new CheckerMaterial(0.1f,0.5f);
-	sphere1->material = new PhongMaterial(Color::green(), Color::white(), 16,0.25f);
-	sphere2->material = new PhongMaterial(Color::blue(), Color::white(), 16,0.25f);
-
-	Union scence;
-	scence.push(plane1);
-	scence.push(sphere1);
-	scence.push(sphere2);
-
-	long maxDepth = 20;
-	long maxReflect = 5;
-	float dx = 1.0f / WINDOW_WIDTH;
-	float dy = 1.0f / WINDOW_HEIGHT;
-	float dDeep = 255.0f / maxDepth;
-	glBegin(GL_POINTS);
-	for (long y = 0; y < WINDOW_HEIGHT; y++)
-	{
-		float sy = 1 - dy * y;
-		for (long x = 0; x < WINDOW_WIDTH; x++)
-		{
-
-			float sx = 1 - dx * x;
-			CRay ray(camera.generateRay(sx, sy));
-			IntersectResult result = scence.isIntersected(ray);
-			if (result.isHit)
-			{
-				
-				Color color = rayTraceRecursive(&scence, ray, maxReflect);
-				//Color color = result.object->material->sample(ray, result.position, result.normal);
-				color.saturate();
-				//color.show();
-				glColor3ub(color.R * 255, color.G * 255, color.B * 255);
-				glVertex2f(sx, sy);
-			}
-		}
-	}
-	glEnd();
-	glFlush();
-}
-
-void renderLight()
-{
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glLoadIdentity();
-	glTranslatef(-0.5f, -0.5f, -1.0f);
-	glPointSize(2.0f);
-
-	Union scene;
-	PerspectiveCamera camera(GVector3(0, 10, 10), GVector3(0, 0, -1), GVector3(0, 1, 0), 90);
-	Plane*plane1 = new Plane(GVector3(0, 1, 0), 0.0);
-	Plane*plane2 = new Plane(GVector3(0, 0, 1), -50);
-	Plane*plane3 = new Plane(GVector3(1, 0, 0), -20);
-	CSphere* sphere1 = new CSphere(GVector3(0, 10, -10), 10.0);
-
-	//	plane1->material = new CheckerMaterial(0.1f, 0.5f);
-	//	plane2->material = new CheckerMaterial(0.1f, 0.5f);
-	//	plane3->material = new CheckerMaterial(0.1f, 0.5f);
-
-	plane1->material = new PhongMaterial(Color::red(), Color::white(), 0.1, 0.01f);
-	plane2->material = new PhongMaterial(Color::blue(), Color::white(), 0.1, 0.01f);
-	plane3->material = new PhongMaterial(Color::white(), Color::white(), 0.1, 0.01f);
-
-
-
-	sphere1->material = new PhongMaterial(Color::green(), Color::white(), 5, 0.25f);
-
-	DirectLight light1(Color::white(), GVector3(-1.75, -2, -1.5), true);
-	//PointLight light2(Color::white().multiply(200), GVector3(10, 20, 10), true);
-
-	scene.push(plane1);
-	//scene.push(plane2);
-	//scene.push(plane3);
-	scene.push(sphere1);
-	long maxDepth = 20;
-	long maxReflect = 5;
-	float dx = 1.0f / WINDOW_WIDTH;
-	float dy = 1.0f / WINDOW_HEIGHT;
-	float dD = 255.0f / maxDepth;
-
-	//time_t timeBegin, timeEnd;
-	//timeBegin = time(NULL);
-	MyTimeCount::countTime(false);
-
-	glBegin(GL_POINTS);
-	for (long y = 0; y < WINDOW_HEIGHT; ++y)
-	{
-		float sy = 1 - dy * y;
-		for (long x = 0; x < WINDOW_WIDTH; ++x)
-		{
-			float sx = dx * x;
-			CRay ray(camera.generateRay(sx, sy));
-			IntersectResult result = scene.isIntersected(ray);
-
-			if (result.isHit)
-			{
-				Color color1 = rayTraceRecursive(&scene, ray, maxReflect);
-				Color color2= light1.intersect(scene, result);
-				Color color = color1.modulate(color2);
-
-				
-				//Color color = light1.intersect(scene, result);
-
-				color.saturate();
-			//	color.show();
-				//color = color.normalize();
-				glColor3ub(color.R * 255, color.G * 255, color.B * 255);
-				glVertex2f(sx, sy);
-			}
-		}
-	}
-	glEnd();
-	glFlush();
-	//timeEnd = time(NULL);
-	//cout << "”√ ±£∫" << timeEnd - timeBegin << endl;
-	MyTimeCount::countTime(true);
-}
+//void renderLight()
+//{
+//	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+//	glLoadIdentity();
+//	glTranslatef(-0.5f, -0.5f, -1.0f);
+//	glPointSize(2.0f);
+//
+//	Union scene;
+//	PerspectiveCamera camera(GVector3(0, 10, 10), GVector3(0, 0, -1), GVector3(0, 1, 0), 90);
+//	Plane*plane1 = new Plane(GVector3(0, 1, 0), 0.0);
+//	Plane*plane2 = new Plane(GVector3(0, 0, 1), -50);
+//	Plane*plane3 = new Plane(GVector3(1, 0, 0), -20);
+//	CSphere* sphere1 = new CSphere(GVector3(0, 10, -10), 10.0);
+//
+//	//	plane1->material = new CheckerMaterial(0.1f, 0.5f);
+//	//	plane2->material = new CheckerMaterial(0.1f, 0.5f);
+//	//	plane3->material = new CheckerMaterial(0.1f, 0.5f);
+//
+//	plane1->material = new PhongMaterial(Color::red(), Color::white(), 0.1, 0.01f);
+//	plane2->material = new PhongMaterial(Color::blue(), Color::white(), 0.1, 0.01f);
+//	plane3->material = new PhongMaterial(Color::white(), Color::white(), 0.1, 0.01f);
+//
+//
+//
+//	sphere1->material = new PhongMaterial(Color::green(), Color::white(), 5, 0.25f);
+//
+//	DirectLight light1(Color::white(), GVector3(-1.75, -2, -1.5), true);
+//	//PointLight light2(Color::white().multiply(200), GVector3(10, 20, 10), true);
+//
+//	scene.push(plane1);
+//	//scene.push(plane2);
+//	//scene.push(plane3);
+//	scene.push(sphere1);
+//	long maxDepth = 20;
+//	long maxReflect = 5;
+//	float dx = 1.0f / WINDOW_WIDTH;
+//	float dy = 1.0f / WINDOW_HEIGHT;
+//	float dD = 255.0f / maxDepth;
+//
+//	//time_t timeBegin, timeEnd;
+//	//timeBegin = time(NULL);
+//	MyTimeCount::countTime(false);
+//
+//	glBegin(GL_POINTS);
+//	for (long y = 0; y < WINDOW_HEIGHT; ++y)
+//	{
+//		float sy = 1 - dy * y;
+//		for (long x = 0; x < WINDOW_WIDTH; ++x)
+//		{
+//			float sx = dx * x;
+//			CRay ray(camera.generateRay(sx, sy));
+//			IntersectResult result = scene.isIntersected(ray);
+//
+//			if (result.isHit)
+//			{
+//				Color color1 = rayTraceRecursive(&scene, ray, maxReflect);
+//				Color color2= light1.intersect(scene, result);
+//				Color color = color1.modulate(color2);
+//
+//				
+//				//Color color = light1.intersect(scene, result);
+//
+//				color.saturate();
+//			//	color.show();
+//				//color = color.normalize();
+//				glColor3ub(color.R * 255, color.G * 255, color.B * 255);
+//				glVertex2f(sx, sy);
+//			}
+//		}
+//	}
+//	glEnd();
+//	glFlush();
+//	//timeEnd = time(NULL);
+//	//cout << "Áî®Êó∂Ôºö" << timeEnd - timeBegin << endl;
+//	MyTimeCount::countTime(true);
+//}
 
 
-void renderPointLight()
-{
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glLoadIdentity();
-	glTranslatef(-0.5f, -0.5f, -1.0f);
-	glPointSize(2.0f);
-
-	Union scene;
-	PerspectiveCamera camera(GVector3(0, 10, 10), GVector3(0, 0, -1), GVector3(0, 1, 0), 90);
-	Plane*plane1 = new Plane(GVector3(0, 1, 0), 0.0);
-	Plane*plane2 = new Plane(GVector3(0, 0, 1), -50);
-	Plane*plane3 = new Plane(GVector3(1, 0, 0), -20);
-	CSphere* sphere1 = new CSphere(GVector3(0, 10, -10), 10.0);
-
-	plane1->material = new CheckerMaterial(0.1f, 0.5f);
-	plane2->material = new CheckerMaterial(0.1f, 0.5f);
-	plane3->material = new CheckerMaterial(0.1f, 0.5f);
-
-	//plane1->material = new PhongMaterial(Color::red(), Color::white(), 0.1, 0.25f);
-	//plane2->material = new PhongMaterial(Color::blue(), Color::white(), 0.1, 0.25f);
-	//plane3->material = new PhongMaterial(Color::white(), Color::white(), 0.1, 0.25f);
-
-	sphere1->material = new PhongMaterial(Color::green(), Color::white(), 5, 0.25f);
-	
-	//DirectLight light1(Color::white().multiply(0.5), GVector3(-1.75, -2, -1.5), true);
-	PointLight light2(Color::white().multiply(200), GVector3(10, 20, 10), true);
-
-	scene.push(plane1);
-	scene.push(plane2);
-	scene.push(plane3);
-	scene.push(sphere1);
-	long maxDepth = 20;
-	long maxReflect = 5;
-	float dx = 1.0f / WINDOW_WIDTH;
-	float dy = 1.0f / WINDOW_HEIGHT;
-	float dD = 255.0f / maxDepth;
-
-	//time_t timeBegin, timeEnd;
-	//timeBegin = time(NULL);
-
-	MyTimeCount::countTime(false);
-
-	glBegin(GL_POINTS);
-	for (long y = 0; y < WINDOW_HEIGHT; ++y)
-	{
-		float sy = 1 - dy * y;
-		//double sy = 1 - dy * y;
-		for (long x = 0; x < WINDOW_WIDTH; ++x)
-		{
-			float sx = dx * x;
-			//double sx = dx * x;
-			CRay ray(camera.generateRay(sx, sy));
-			IntersectResult result = scene.isIntersected(ray);
-
-			if (result.isHit)
-			{
-				Color color1 = rayTraceRecursive(&scene, ray, maxReflect);
-				//Color color2= light1.intersect(scene, result);
-				Color color2 = light2.intersect(scene, result);
-				Color color = color1.modulate(color2);
-				/*pixelColor = SDL_MapRGB(screen->format, std::min(color.r * 255, (float)255), std::min(color.g * 255, (float)255.0), std::min(color.b * 255, (float)255.0));
-				drawPixel(screen, x, y, pixelColor);*/
-				color.saturate();
-				//color.show();
-
-				glColor3ub(color.R * 255, color.G * 255, color.B * 255);
-				//glColor3f(color.R * 255.0, color.G * 255.0, color.B * 255.0);
-
-				glVertex2f(sx, sy);
-			}
-		}
-	}
-	glEnd();
-	glFlush();
-	//timeEnd = time(NULL);
-	//cout << "”√ ±£∫" << timeEnd - timeBegin << endl;
-
-	MyTimeCount::countTime(true);
-}
+//void renderPointLight()
+//{
+//	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+//	glLoadIdentity();
+//	glTranslatef(-0.5f, -0.5f, -1.0f);
+//	glPointSize(2.0f);
+//
+//	Union scene;
+//	PerspectiveCamera camera(GVector3(0, 10, 10), GVector3(0, 0, -1), GVector3(0, 1, 0), 90);
+//	Plane*plane1 = new Plane(GVector3(0, 1, 0), 0.0);
+//	Plane*plane2 = new Plane(GVector3(0, 0, 1), -50);
+//	Plane*plane3 = new Plane(GVector3(1, 0, 0), -20);
+//	CSphere* sphere1 = new CSphere(GVector3(0, 10, -10), 10.0);
+//
+//	plane1->material = new CheckerMaterial(0.1f, 0.5f);
+//	plane2->material = new CheckerMaterial(0.1f, 0.5f);
+//	plane3->material = new CheckerMaterial(0.1f, 0.5f);
+//
+//	//plane1->material = new PhongMaterial(Color::red(), Color::white(), 0.1, 0.25f);
+//	//plane2->material = new PhongMaterial(Color::blue(), Color::white(), 0.1, 0.25f);
+//	//plane3->material = new PhongMaterial(Color::white(), Color::white(), 0.1, 0.25f);
+//
+//	sphere1->material = new PhongMaterial(Color::green(), Color::white(), 5, 0.25f);
+//	
+//	//DirectLight light1(Color::white().multiply(0.5), GVector3(-1.75, -2, -1.5), true);
+//	PointLight light2(Color::white().multiply(200), GVector3(10, 20, 10), true);
+//
+//	scene.push(plane1);
+//	scene.push(plane2);
+//	scene.push(plane3);
+//	scene.push(sphere1);
+//	long maxDepth = 20;
+//	long maxReflect = 5;
+//	float dx = 1.0f / WINDOW_WIDTH;
+//	float dy = 1.0f / WINDOW_HEIGHT;
+//	float dD = 255.0f / maxDepth;
+//
+//	//time_t timeBegin, timeEnd;
+//	//timeBegin = time(NULL);
+//
+//	MyTimeCount::countTime(false);
+//
+//	glBegin(GL_POINTS);
+//	for (long y = 0; y < WINDOW_HEIGHT; ++y)
+//	{
+//		float sy = 1 - dy * y;
+//		//double sy = 1 - dy * y;
+//		for (long x = 0; x < WINDOW_WIDTH; ++x)
+//		{
+//			float sx = dx * x;
+//			//double sx = dx * x;
+//			CRay ray(camera.generateRay(sx, sy));
+//			IntersectResult result = scene.isIntersected(ray);
+//
+//			if (result.isHit)
+//			{
+//				Color color1 = rayTraceRecursive(&scene, ray, maxReflect);
+//				//Color color2= light1.intersect(scene, result);
+//				Color color2 = light2.intersect(scene, result);
+//				Color color = color1.modulate(color2);
+//				/*pixelColor = SDL_MapRGB(screen->format, std::min(color.r * 255, (float)255), std::min(color.g * 255, (float)255.0), std::min(color.b * 255, (float)255.0));
+//				drawPixel(screen, x, y, pixelColor);*/
+//				color.saturate();
+//				//color.show();
+//
+//				glColor3ub(color.R * 255, color.G * 255, color.B * 255);
+//				//glColor3f(color.R * 255.0, color.G * 255.0, color.B * 255.0);
+//
+//				glVertex2f(sx, sy);
+//			}
+//		}
+//	}
+//	glEnd();
+//	glFlush();
+//	//timeEnd = time(NULL);
+//	//cout << "Áî®Êó∂Ôºö" << timeEnd - timeBegin << endl;
+//
+//	MyTimeCount::countTime(true);
+//}
 
 
 void windowChangeSize(GLsizei w,GLsizei h)
@@ -689,7 +974,7 @@ void windowChangeSize(GLsizei w,GLsizei h)
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 
-	//Ω®¡¢≤√ºÙø’º‰µƒ∑∂Œß
+	//Âª∫Á´ãË£ÅÂâ™Á©∫Èó¥ÁöÑËåÉÂõ¥
 	if (w <= h)
 		glOrtho(0, 250.0, 0.0, 250.0*h / w, 1.0, -1.0);
 	else
@@ -700,20 +985,20 @@ void windowChangeSize(GLsizei w,GLsizei h)
 
 void windowChangeSize2(GLsizei width, GLsizei height)
 {
-	// ∑¿÷π¥∞ø⁄¥Û–°±‰Œ™0
+	// Èò≤Ê≠¢Á™óÂè£Â§ßÂ∞èÂèò‰∏∫0
 	if (height == 0)
 	{
 		height = 1;
 	}
-	// ÷ÿ÷√µ±«∞µƒ ”ø⁄
+	// ÈáçÁΩÆÂΩìÂâçÁöÑËßÜÂè£
 	glViewport(0, 0, (GLint)width, (GLint)height);
-	// —°‘ÒÕ∂”∞æÿ’Û
+	// ÈÄâÊã©ÊäïÂΩ±Áü©Èòµ
 	glMatrixMode(GL_PROJECTION);
-	// ÷ÿ÷√Õ∂”∞æÿ’Û
+	// ÈáçÁΩÆÊäïÂΩ±Áü©Èòµ
 	glLoadIdentity();
-	// …Ë÷√ ”ø⁄µƒ¥Û–°
+	// ËÆæÁΩÆËßÜÂè£ÁöÑÂ§ßÂ∞è
 	gluPerspective(45.0, (GLfloat)width / (GLfloat)height, 0.1, 100.0);
-	// —°‘Òƒ£–Õπ€≤Ïæÿ’Û
+	// ÈÄâÊã©Ê®°ÂûãËßÇÂØüÁü©Èòµ
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 }
@@ -735,11 +1020,16 @@ int main(int argc,char*argv[]) {
 	//glutDisplayFunc(renderTriangle);
 
 
-	//SceneToRender::initWithModel();
+	SceneToRender::initWithModel();
 	//SceneToRender::initWithTriangle();
-	SceneToRender::initWithSphere();
+	//SceneToRender::initWithSphere();
+	//SceneToRender::initWithTwoSphere();
+	//SceneToRender::initWith4Triangle();
 
-	glutDisplayFunc(SceneToRender::renderModel);
+	glutDisplayFunc(SceneToRender::renderGray);
+	//glutDisplayFunc(SceneToRender::renderModel);
+	//glutDisplayFunc(SceneToRender::renderModelwithPointLight);
+	//glutDisplayFunc(SceneToRender::renderModelwithRayTrace);
 
 	glutReshapeFunc(windowChangeSize2);
 	glutMainLoop();

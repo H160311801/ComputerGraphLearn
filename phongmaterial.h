@@ -8,8 +8,10 @@
 #include<algorithm>
 
 //
-static GVector3 LightDir = GVector3(1, 1, 1).normalize();//环境光
-static Color LightColor = Color::white();//环境光
+static GVector3 _lightray = GVector3(-1, -1, -1).normalize();
+static Color LightColor = Color::white();
+
+static Color dauflt_Ka = Color(0.1, 0.1, 0.1);
 class PhongMaterial:public Material
 {
 public:
@@ -21,11 +23,9 @@ public:
 
 	virtual~PhongMaterial();
 	virtual Color sample(const CRay&_ray, const GVector3 &_position,  GVector3&_normal);
+	virtual Color sample(const CRay & _ray, const CRay _lightray, const GVector3 & _position, GVector3 & _normal);
 private:
-	Color Ka ;//表面环境光反射系数假设为0.25
-	Color diffuse;//扩散
-	Color specular;//镜面
-	float shininess;//
+
 }
 #endif // !PHONGMATERIAL_H
 ;

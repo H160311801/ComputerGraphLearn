@@ -22,3 +22,8 @@ Color CheckerMaterial::sample(const CRay & _ray, const GVector3 & _position,  GV
 	d = fmod(d, 2);
 	return d<1?Color::black():Color::white();
 }
+
+Color CheckerMaterial::sample(const CRay & _ray, const CRay _lightray, const GVector3 & _position, GVector3 & _normal)
+{
+	return Color();
+}

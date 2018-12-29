@@ -27,3 +27,8 @@ Color Material::sample(const CRay & _ray, const GVector3& _position,  GVector3 &
 {
 	return Color::white();
 }
+
+Color Material::sample(const CRay & _ray, const CRay _lightray, const GVector3 & _position, GVector3 & _normal)
+{
+	return Color();
+}
