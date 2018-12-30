@@ -145,7 +145,7 @@ namespace SceneToRender {
 		//plane1->material = new CheckerMaterial(0.1f);
 		//sphere1->material = new PhongMaterial(Color::green(), Color::white(), 16);
 		//sphere2->material = new PhongMaterial(Color::blue(), Color::white(), 16);
-		sphere1->material = new PhongMaterial(Color(0.1,0.1,0.1), Color::black(), 2,0,0.9f);
+		sphere1->material = new PhongMaterial(Color(0.1,0.1,0.1), Color::black(), 2,0.2,0.9f);
 		//sphere1->material = new PhongMaterial(Color(0.3, 0.4,0.5), Color::white(), 2, 0.3);
 		sphere2->material = new PhongMaterial(Color::blue(), Color::white(), 16,0.25f);
 		sphere3->material = new PhongMaterial(Color::red(), Color::white(), 16, 0.25f);
@@ -1149,27 +1149,27 @@ int main(int argc,char*argv[]) {
 
 	//glutDisplayFunc(display);
 	
-	//glutDisplayFunc(renderDepth2);
-	//glutDisplayFunc(renderDepth3);
-	//glutDisplayFunc(renderUnion);
-	//glutDisplayFunc(renderRecursive);
-	//glutDisplayFunc(renderLight);
+	//glutDisplayFunc(renderDepth2);//单个球的局部光照
+	//glutDisplayFunc(renderDepth3);//渲染棋盘平面
+	//glutDisplayFunc(renderUnion);//场景：两个球与棋盘平平面的局部光照
+	//glutDisplayFunc(renderRecursive);//场景：两个球与棋盘平平面的局部光照//非透明体
+	//glutDisplayFunc(renderLight); // 场景：单球与三平面平面的局部光照
 
-	//glutDisplayFunc(renderTriangle);
+	//glutDisplayFunc(renderTriangle);//三角形的局部光照
 
+	//初始化场景
+	SceneToRender::initWithModel();//加载一个四面体的网格模型
+	//SceneToRender::initWithTriangle();//加载一个三角形
+	//SceneToRender::initWithSphere();  //加载一个球一个平面
+	//SceneToRender::initWithSphere2(); //加载一个球
+	//SceneToRender::initWithTwoSphere(); //加载三球三角面
+	//SceneToRender::initWith4Triangle(); // 加载多个三角面
 
-	//SceneToRender::initWithModel();
-	//SceneToRender::initWithTriangle();
-	//SceneToRender::initWithSphere();
-	//SceneToRender::initWithSphere2();
-	SceneToRender::initWithTwoSphere();
-	//SceneToRender::initWith4Triangle();
-
-	//glutDisplayFunc(SceneToRender::renderGray);
+	//glutDisplayFunc(SceneToRender::renderGray);//渲染深度//求交测试
 	//glutDisplayFunc(SceneToRender::renderModel);
-	//glutDisplayFunc(SceneToRender::renderModelwithPointLight);
+	//glutDisplayFunc(SceneToRender::renderModelwithPointLight);//渲染局部光照//单点光源
 	
-	glutDisplayFunc(SceneToRender::renderModelwithRayTrace);
+	glutDisplayFunc(SceneToRender::renderModelwithRayTrace);//渲染全局光照
 
 	glutReshapeFunc(windowChangeSize2);
 	glutMainLoop();
