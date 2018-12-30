@@ -14,6 +14,11 @@ float Material::getReflec()
 	return reflectiveness;
 }
 
+float Material::getRatio()
+{
+	return refractRatio;
+}
+
 void Material::setReflec(float _reflectiveness)
 {
 	reflectiveness = _reflectiveness;

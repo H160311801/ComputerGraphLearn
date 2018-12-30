@@ -33,13 +33,17 @@ namespace SceneToRender {
 	const float dD = 255.0f / maxDepth;//灰阶，255--0，黑---白
 
 	CObject* scene = nullptr;
-	//PerspectiveCamera camera(GVector3(horiz, 0, dep), GVector3(0, 0, -1), GVector3(0, 1, 0), 90);
-	PerspectiveCamera camera(GVector3(-10, -5, -10), GVector3(1, 1, 1), GVector3(0, 0, 1), 90);
-	//PointLight light2(Color::white().multiply(3), GVector3(10, 20, 10), true);
-	PointLight light2(Color::white().multiply(3), GVector3(-10, -10, -10), true);
+
+	PerspectiveCamera camera;
+	PointLight light2;
+
+	//PerspectiveCamera camera(GVector3(-10, -5, -10), GVector3(1, 1, 1), GVector3(0, 0, 1), 90);
+	//PointLight light2(Color::white().multiply(3), GVector3(-10, -10, -10), true);
 
 	void initWithModel() {
-		const string path = "0.obj";
+		camera=PerspectiveCamera(GVector3(-10, -5, -10), GVector3(1, 1, 1), GVector3(0, 0, 1), 90);
+		light2=PointLight(Color::white().multiply(3), GVector3(-10, -10, -10), true);
+		const string path = "test.obj";
 		ObjLoader *ob = new ObjLoader(path);
 		//sphere1->material = new PhongMaterial(Color::green(), Color::white(), 16);
 		ob->setMaterial(new PhongMaterial(Color::green(), Color::white(), 16, 0.25f));
@@ -74,13 +78,33 @@ namespace SceneToRender {
 	void initWithSphere()
 	{
 		destroyIfUsed();
-		CSphere* sphere1 = new CSphere(GVector3(0, 0, -10),5.0 );
-		sphere1->material = (new PhongMaterial(Color::red(), Color::white(), 16, 0.25f));
-		scene = sphere1;
+		camera=PerspectiveCamera  (GVector3(horiz, 0, dep), GVector3(0, 0, -1), GVector3(0, 1, 0), 90);
+		light2=PointLight(Color::white().multiply(2), GVector3(10, 10, 10), true);
+		CSphere* sphere1 = new CSphere(GVector3(0, 0, -10),3 );
+		sphere1->material = (new PhongMaterial(Color::green(), Color::white(), 2, 0.25,0.5));
+		/*CRay test1 = CRay(GVector3(0, 0, -7), GVector3(0, 0, -1));
+		CRay test2 = CRay(GVector3(0, 0, -13), GVector3(0, 0, -1));
+		sphere1->isIntersected(test1);
+		sphere1->isIntersected(test2);*/
+
+		Triangle* triangle1 = new Triangle(GVector3(100, 100, -50), GVector3(100, -100, -50), GVector3(-100, -100, -50));
+		Triangle* triangle2 = new Triangle(GVector3(100, 100, -50), GVector3(-100, -100, -50), GVector3(-100, 100, -50));
+		
+		triangle1->material = (new PhongMaterial(Color(2.5,0.5,1), Color::white(), 16, 0.25f));
+		triangle2->material = (new PhongMaterial(Color(2.5, 0.5, 1), Color::white(), 16, 0.25f));
+		Union* _union = new Union();
+		_union->push(sphere1);
+		_union->push(triangle1);
+		_union->push(triangle2);
+		scene = _union;
+
+		scene = _union;
 	}
 
 	void initWithTriangle()
 	{
+		camera = PerspectiveCamera(GVector3(horiz, 0, dep), GVector3(0, 0, -1), GVector3(0, 1, 0), 90);
+		light2 = PointLight(Color::white().multiply(3), GVector3(10, 20, 10), true);
 		destroyIfUsed();
 		//Triangle* triangle = new Triangle(GVector3(0,0,-10),  GVector3(4,-5,0), GVector3(-4, -5, 0));
 		//Triangle* triangle = new Triangle(GVector3(0, 0, 0), GVector3(4, -5, 0), GVector3(-4, -5, 0));
@@ -91,11 +115,14 @@ namespace SceneToRender {
 
 	void initWithTwoSphere()
 	{
+
+		camera = PerspectiveCamera(GVector3(horiz, 0, dep), GVector3(0, 0, -1), GVector3(0, 1, 0), 90);
+		light2 = PointLight(Color::white().multiply(3), GVector3(10, 20, 10), true);
 		destroyIfUsed();
 
 
 		Triangle* triangle = new Triangle(GVector3(0, 100, -60), GVector3(100, -100, -60), GVector3(-100, -100, -60));
-		triangle->material = (new PhongMaterial(Color::white(), Color::white(), 16, 0.25f));
+		triangle->material = (new PhongMaterial(Color(4,5,6), Color::white(), 16, 0.25f));
 		//Plane* plane1 = new Plane(GVector3(0, 1, 0), 1.0);
 		CSphere* sphere1 = new CSphere(GVector3(-2, 5, -10), 5.0);
 		CSphere* sphere2 = new CSphere(GVector3(5, 5, -10), 3.0);
@@ -104,7 +131,7 @@ namespace SceneToRender {
 		//plane1->material = new CheckerMaterial(0.1f);
 		//sphere1->material = new PhongMaterial(Color::green(), Color::white(), 16);
 		//sphere2->material = new PhongMaterial(Color::blue(), Color::white(), 16);
-		sphere1->material = new PhongMaterial(Color::green(), Color::white(), 16,0.25f);
+		sphere1->material = new PhongMaterial(Color(0.1,0.1,0.1), Color::black(), 2,0,0.9f);
 		sphere2->material = new PhongMaterial(Color::blue(), Color::white(), 16,0.25f);
 		sphere3->material = new PhongMaterial(Color::red(), Color::white(), 16, 0.25f);
 
@@ -119,6 +146,8 @@ namespace SceneToRender {
 	}
 	void initWith4Triangle()
 	{
+		camera = PerspectiveCamera(GVector3(-10, -5, -10), GVector3(1, 1, 1), GVector3(0, 0, 1), 90);
+		light2 = PointLight(Color::white().multiply(3), GVector3(-10, -10, -10), true);
 		destroyIfUsed();
 		//Triangle* triangle = new Triangle(GVector3(0,0,-10),  GVector3(4,-5,0), GVector3(-4, -5, 0));
 		//Triangle* triangle = new Triangle(GVector3(0, 0, 0), GVector3(4, -5, 0), GVector3(-4, -5, 0));
@@ -224,7 +253,45 @@ namespace SceneToRender {
 
 	}
 
-	Color rayTraceRecursive_NEW(CObject* _object, CRay& _ray,int _maxReflection)
+	CRay generalRefractRay(CRay _ray,IntersectResult result , float refractRatio)
+	{
+		//refractRatio = sinθ' / sinθ 
+		//static bool Refract(const Vector3&amp; vec, const Vector3&amp; normal, float refractRatio, Vector3&amp; refractDir)
+		//	｛
+		//	Vector3 inVec = vec;
+		//inVec.Normalize();
+		//float dt = Vector3::Dot(inVec, normal); //cosθ
+		//float s2 = 1.0 - dt * dt; // sinθ ^ 2
+		//float st2 = refractRatio * refractRatio * s2;// sinθ’ ^ 2 = refractRato ^ 2 * sinθ ^ 2
+		//float cost2 = 1 - st2;
+		//if (cost2 &gt; 0)
+		//	｛
+		//	refractDir = (inVec - normal * dt) * refractRatio - normal * sqrt(cost2);
+		//return true;
+		//｝
+		//	return false;
+		//｝
+		GVector3 inVec = _ray.getDirection();
+		GVector3 refractDir;
+		inVec.normalize();
+		float cosTheta = inVec.dotMul(result.normal);
+		float sinTheta_2 = 1.0 - cosTheta * cosTheta;
+		float sinTheta2_2 = refractRatio * refractRatio*sinTheta_2;
+		float cost2 = 1 - sinTheta2_2;
+		if (cost2 > 0)
+		{
+			refractDir = (inVec - result.normal*cosTheta)*refractRatio - result.normal*sqrt(cost2);
+
+
+			CRay refracRay = CRay(result.position, refractDir);
+
+			return refracRay;
+		}
+		else {
+			return CRay();
+		}
+	}
+	Color rayTraceRecursive_NEW(CObject* _object, CRay& _ray, int _maxReflection)
 	{
 		IntersectResult result = _object->isIntersected(_ray);
 		if (result.isHit)
@@ -233,22 +300,54 @@ namespace SceneToRender {
 			//Color PhongColor = result.object->material->sample(_ray, result.position, result.normal);
 			Color PhongColor = phongcalculate(_ray, LightRay, result);
 
-			Color AllColor;
+			Color AllColor = Color::black();
 			float reflectiveness = result.object->material->getReflec();
+			float refractRatio = result.object->material->getRatio();
+			//PhongColor = PhongColor.multiply(1 - reflectiveness);
 			PhongColor = PhongColor.multiply(1 - reflectiveness);
-
+			AllColor = AllColor.add(PhongColor);
 			if (reflectiveness > 0 && _maxReflection > 0)
 			{
 				GVector3 refle_directon = result.normal*(-2 * result.normal.dotMul(_ray.getDirection()));
 				CRay ReflecRay = CRay(result.position, refle_directon);
 				Color reflectedColor = rayTraceRecursive_NEW(_object, ReflecRay, _maxReflection - 1);
 
-				AllColor = PhongColor.add(reflectedColor.multiply(reflectiveness));
+				AllColor = AllColor.add(reflectedColor.multiply(reflectiveness));
 			}
-			return AllColor;
-		}
-		else return Color::black();
+			if (refractRatio > 0 && _maxReflection > 0)
+			{
+				CRay refracRay = generalRefractRay(_ray, result, refractRatio);
+				IntersectResult result2 = result.object->isIntersected(refracRay);
+				if (result2.object == result.object)
+				{
+					result2.normal = result2.normal*-1;
+					refracRay = generalRefractRay(refracRay, result2, pow(refractRatio, -1));
+				}
+				Color refracColor = rayTraceRecursive_NEW(_object, refracRay, _maxReflection - 1);
+				AllColor = AllColor.add(refracColor.multiply(refractRatio));
+				//	/*GVector3 inVec = _ray.getDirection();
+				//	GVector3 refractDir;
+				//	inVec.normalize();
+				//	float cosTheta = inVec.dotMul(result.normal);
+				//	float sinTheta_2 = 1.0 - cosTheta * cosTheta;
+				//	float sinTheta2_2 = refractRatio * refractRatio*sinTheta_2;
+				//	float cost2 = 1 - sinTheta2_2;
+				//	if (cost2 > 0)
+				//	{
+				//		refractDir = (inVec - result.normal*cosTheta)*refractRatio - result.normal*sqrt(cost2);
+				//		CRay refracRay = CRay(result.position, refractDir);
+				//		IntersectResult result2=result.object->isIntersected(refracRay);
 
+				//		Color refracColor = rayTraceRecursive_NEW(_object, refracRay, _maxReflection - 1);
+				//		AllColor.add(refracColor.multiply(refractRatio));
+				//	}*/
+				//	
+			}
+				return AllColor;
+		}
+			else return Color::black();
+
+	
 	}
 	void MyGlRenderModel() {
 		glBegin(GL_POINTS);
@@ -324,6 +423,7 @@ namespace SceneToRender {
 					//resultcolor = lightShadowstrong;
 					//CRay lightray = CRay(result.position, result.position - light2.getPosition());
 					//resultcolor = phongcalculate(result.object, ray, lightray, result.position, result.normal, lightShadowstrong);
+
 					CRay lightray = CRay(result.position, result.position - light2.getPosition());
 					resultcolor = phongcalculate(ray, lightray,result);
 					resultcolor.saturate();
@@ -371,6 +471,10 @@ namespace SceneToRender {
 	}
 	void MyGlRenderModelwithRayTrace_NEW() {
 		glBegin(GL_POINTS);
+
+		//CRay testa = CRay(GVector3(0, 0, 0), GVector3(0, 0, -1));
+		//IntersectResult resulta = scene->isIntersected(testa);
+		//Color resultcolor = rayTraceRecursive_NEW(scene, testa, maxReflect);
 		for (long y = 0; y < WINDOW_HEIGHT; ++y)
 		{
 			float sy = 1 - dy * y;
@@ -385,6 +489,7 @@ namespace SceneToRender {
 				if (result.isHit)
 				{
 					Color resultcolor = rayTraceRecursive_NEW(scene, ray, maxReflect);
+					resultcolor.saturate();
 					glColor3f(resultcolor.R * 255.0, resultcolor.G * 255.0, resultcolor.B * 255.0);
 					glVertex2f(sx, sy);
 				}
@@ -438,8 +543,10 @@ namespace SceneToRender {
 
 		MyTimeCount::countTime(false);
 		MyGlRenderModelwithRayTrace_NEW();
+
 		MyTimeCount::countTime(true);
 	}
+
 }
 
 
@@ -1020,16 +1127,17 @@ int main(int argc,char*argv[]) {
 	//glutDisplayFunc(renderTriangle);
 
 
-	SceneToRender::initWithModel();
+	//SceneToRender::initWithModel();
 	//SceneToRender::initWithTriangle();
 	//SceneToRender::initWithSphere();
-	//SceneToRender::initWithTwoSphere();
+	SceneToRender::initWithTwoSphere();
 	//SceneToRender::initWith4Triangle();
 
-	glutDisplayFunc(SceneToRender::renderGray);
+	//glutDisplayFunc(SceneToRender::renderGray);
 	//glutDisplayFunc(SceneToRender::renderModel);
 	//glutDisplayFunc(SceneToRender::renderModelwithPointLight);
-	//glutDisplayFunc(SceneToRender::renderModelwithRayTrace);
+	
+	glutDisplayFunc(SceneToRender::renderModelwithRayTrace);
 
 	glutReshapeFunc(windowChangeSize2);
 	glutMainLoop();

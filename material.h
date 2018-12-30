@@ -12,6 +12,7 @@ public:
 	Material();
 	Material(float _reflectiveness);
 	float getReflec();
+	float getRatio();
 	void setReflec(float _reflectiveness);
 	virtual ~Material();
 	virtual Color sample(const CRay& _ray, const GVector3 &_position, GVector3 &_normal);
@@ -22,6 +23,7 @@ public:
 	Color specular;//镜面
 	float shininess;//
 	float reflectiveness;
+	float refractRatio = 0;//表面折射率，0，表示物体不透明
 };
 
 #endif // !MATERIAL_H

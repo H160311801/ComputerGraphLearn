@@ -1,14 +1,42 @@
-﻿  main.cpp
+﻿  PointLight.cpp
+c:\users\yzt\source\repos\cglearn_lab3\cglearn_lab3\pointlight.cpp(57): warning C4305: “初始化”: 从“double”到“float”截断
+c:\users\yzt\source\repos\cglearn_lab3\cglearn_lab3\pointlight.cpp(76): warning C4305: “参数”: 从“double”到“float”截断
+  main.cpp
 c:\users\yzt\source\repos\cglearn_lab3\cglearn_lab3\phongmaterial.h(14): warning C4305: “参数”: 从“double”到“float”截断
-c:\users\yzt\source\repos\cglearn_lab3\cglearn_lab3\main.cpp(140): warning C4305: “参数”: 从“double”到“float”截断
-c:\users\yzt\source\repos\cglearn_lab3\cglearn_lab3\main.cpp(171): warning C4305: “参数”: 从“double”到“float”截断
-c:\users\yzt\source\repos\cglearn_lab3\cglearn_lab3\main.cpp(263): warning C4244: “参数”: 从“float”转换到“GLubyte”，可能丢失数据
-c:\users\yzt\source\repos\cglearn_lab3\cglearn_lab3\main.cpp(320): warning C4244: “参数”: 从“double”转换到“GLfloat”，可能丢失数据
-c:\users\yzt\source\repos\cglearn_lab3\cglearn_lab3\main.cpp(354): warning C4244: “参数”: 从“double”转换到“GLfloat”，可能丢失数据
-c:\users\yzt\source\repos\cglearn_lab3\cglearn_lab3\main.cpp(378): warning C4244: “参数”: 从“double”转换到“GLfloat”，可能丢失数据
-c:\users\yzt\source\repos\cglearn_lab3\cglearn_lab3\main.cpp(533): warning C4244: “参数”: 从“float”转换到“GLubyte”，可能丢失数据
-c:\users\yzt\source\repos\cglearn_lab3\cglearn_lab3\main.cpp(603): warning C4305: “参数”: 从“double”到“float”截断
-c:\users\yzt\source\repos\cglearn_lab3\cglearn_lab3\main.cpp(625): warning C4244: “参数”: 从“float”转换到“GLubyte”，可能丢失数据
-c:\users\yzt\source\repos\cglearn_lab3\cglearn_lab3\main.cpp(666): warning C4244: “参数”: 从“float”转换到“GLubyte”，可能丢失数据
-c:\users\yzt\source\repos\cglearn_lab3\cglearn_lab3\main.cpp(717): warning C4244: “参数”: 从“float”转换到“GLubyte”，可能丢失数据
-  cglearn_lab3.vcxproj -> C:\Users\YZT\source\repos\cglearn_lab3\Debug\cglearn_lab3.exe
+c:\users\yzt\source\repos\cglearn_lab3\cglearn_lab3\main.cpp(84): warning C4305: “参数”: 从“double”到“float”截断
+c:\users\yzt\source\repos\cglearn_lab3\cglearn_lab3\main.cpp(179): warning C4305: “参数”: 从“double”到“float”截断
+c:\users\yzt\source\repos\cglearn_lab3\cglearn_lab3\main.cpp(210): warning C4305: “参数”: 从“double”到“float”截断
+c:\users\yzt\source\repos\cglearn_lab3\cglearn_lab3\main.cpp(278): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
+c:\users\yzt\source\repos\cglearn_lab3\cglearn_lab3\main.cpp(351): error C2601: “MyGlRenderModel”: 本地函数定义是非法的
+  c:\users\yzt\source\repos\cglearn_lab3\cglearn_lab3\main.cpp(295): note: 此行有一个“{”没有匹配项
+c:\users\yzt\source\repos\cglearn_lab3\cglearn_lab3\main.cpp(380): error C2601: “MyGlRenderGray”: 本地函数定义是非法的
+  c:\users\yzt\source\repos\cglearn_lab3\cglearn_lab3\main.cpp(295): note: 此行有一个“{”没有匹配项
+c:\users\yzt\source\repos\cglearn_lab3\cglearn_lab3\main.cpp(404): error C2601: “MyGlRenderModelwithPointLight”: 本地函数定义是非法的
+  c:\users\yzt\source\repos\cglearn_lab3\cglearn_lab3\main.cpp(295): note: 此行有一个“{”没有匹配项
+c:\users\yzt\source\repos\cglearn_lab3\cglearn_lab3\main.cpp(438): error C2601: “MyGlRenderModelwithRayTrace”: 本地函数定义是非法的
+  c:\users\yzt\source\repos\cglearn_lab3\cglearn_lab3\main.cpp(295): note: 此行有一个“{”没有匹配项
+c:\users\yzt\source\repos\cglearn_lab3\cglearn_lab3\main.cpp(471): error C2601: “MyGlRenderModelwithRayTrace_NEW”: 本地函数定义是非法的
+  c:\users\yzt\source\repos\cglearn_lab3\cglearn_lab3\main.cpp(295): note: 此行有一个“{”没有匹配项
+c:\users\yzt\source\repos\cglearn_lab3\cglearn_lab3\main.cpp(502): error C2601: “renderGray”: 本地函数定义是非法的
+  c:\users\yzt\source\repos\cglearn_lab3\cglearn_lab3\main.cpp(295): note: 此行有一个“{”没有匹配项
+c:\users\yzt\source\repos\cglearn_lab3\cglearn_lab3\main.cpp(513): error C2601: “renderModel”: 本地函数定义是非法的
+  c:\users\yzt\source\repos\cglearn_lab3\cglearn_lab3\main.cpp(295): note: 此行有一个“{”没有匹配项
+c:\users\yzt\source\repos\cglearn_lab3\cglearn_lab3\main.cpp(526): error C2601: “renderModelwithPointLight”: 本地函数定义是非法的
+  c:\users\yzt\source\repos\cglearn_lab3\cglearn_lab3\main.cpp(295): note: 此行有一个“{”没有匹配项
+c:\users\yzt\source\repos\cglearn_lab3\cglearn_lab3\main.cpp(536): error C2601: “renderModelwithRayTrace”: 本地函数定义是非法的
+  c:\users\yzt\source\repos\cglearn_lab3\cglearn_lab3\main.cpp(295): note: 此行有一个“{”没有匹配项
+c:\users\yzt\source\repos\cglearn_lab3\cglearn_lab3\main.cpp(371): warning C4244: “参数”: 从“float”转换到“GLubyte”，可能丢失数据
+c:\users\yzt\source\repos\cglearn_lab3\cglearn_lab3\main.cpp(429): warning C4244: “参数”: 从“double”转换到“GLfloat”，可能丢失数据
+c:\users\yzt\source\repos\cglearn_lab3\cglearn_lab3\main.cpp(463): warning C4244: “参数”: 从“double”转换到“GLfloat”，可能丢失数据
+c:\users\yzt\source\repos\cglearn_lab3\cglearn_lab3\main.cpp(492): warning C4244: “参数”: 从“double”转换到“GLfloat”，可能丢失数据
+c:\users\yzt\source\repos\cglearn_lab3\cglearn_lab3\main.cpp(544): error C3861: “MyGlRenderModelwithRayTrace_NEW”: 找不到标识符
+c:\users\yzt\source\repos\cglearn_lab3\cglearn_lab3\main.cpp(651): warning C4244: “参数”: 从“float”转换到“GLubyte”，可能丢失数据
+c:\users\yzt\source\repos\cglearn_lab3\cglearn_lab3\main.cpp(721): warning C4305: “参数”: 从“double”到“float”截断
+c:\users\yzt\source\repos\cglearn_lab3\cglearn_lab3\main.cpp(743): warning C4244: “参数”: 从“float”转换到“GLubyte”，可能丢失数据
+c:\users\yzt\source\repos\cglearn_lab3\cglearn_lab3\main.cpp(784): warning C4244: “参数”: 从“float”转换到“GLubyte”，可能丢失数据
+c:\users\yzt\source\repos\cglearn_lab3\cglearn_lab3\main.cpp(835): warning C4244: “参数”: 从“float”转换到“GLubyte”，可能丢失数据
+c:\users\yzt\source\repos\cglearn_lab3\cglearn_lab3\main.cpp(1141): error C2039: “renderModelwithRayTrace”: 不是“SceneToRender”的成员
+  c:\users\yzt\source\repos\cglearn_lab3\cglearn_lab3\main.cpp(25): note: 参见“SceneToRender”的声明
+c:\users\yzt\source\repos\cglearn_lab3\cglearn_lab3\main.cpp(1141): error C2065: “renderModelwithRayTrace”: 未声明的标识符
+c:\users\yzt\source\repos\cglearn_lab3\cglearn_lab3\main.cpp(25): fatal error C1075: “{”: 未找到匹配令牌
+  正在生成代码...

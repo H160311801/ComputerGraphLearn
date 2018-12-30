@@ -28,6 +28,15 @@ PhongMaterial::PhongMaterial(Color _diffuse, Color _specular, float _shininess, 
 	reflectiveness = _reflectiveness;
 
 }
+PhongMaterial::PhongMaterial(Color _diffuse, Color _specular, float _shininess, float _reflectiveness, float _refractRatio)
+{
+	Ka = _diffuse.divide(100);
+	diffuse = _diffuse;
+	specular = _specular;
+	shininess = _shininess;
+	reflectiveness = _reflectiveness;
+	refractRatio = _refractRatio;
+}
 PhongMaterial::PhongMaterial(Color _Ka, Color _diffuse, Color _specular, float _shininess, float _reflectiveness)
 {
 	Ka = _Ka;
@@ -35,6 +44,15 @@ PhongMaterial::PhongMaterial(Color _Ka, Color _diffuse, Color _specular, float _
 	specular = _specular;
 	shininess = _shininess;
 	reflectiveness = _reflectiveness;
+}
+PhongMaterial::PhongMaterial(Color _Ka, Color _diffuse, Color _specular, float _shininess, float _reflectiveness, float _refractRatio)
+{
+	Ka = _Ka;
+	diffuse = _diffuse;
+	specular = _specular;
+	shininess = _shininess;
+	reflectiveness = _reflectiveness;
+	refractRatio = _refractRatio;
 }
 ;
 PhongMaterial::~PhongMaterial()

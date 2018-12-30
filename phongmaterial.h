@@ -19,7 +19,9 @@ public:
 	PhongMaterial( Color _diffuse,  Color specular, float _shininess);
 	PhongMaterial(Color _Ka, Color _diffuse, Color _specular, float _shininess);
 	PhongMaterial(Color _diffuse, Color _specular, float _shininess, float _reflectiveness);
+	PhongMaterial(Color _diffuse, Color _specular, float _shininess, float _reflectiveness, float _refractRatio);
 	PhongMaterial(Color _Ka,Color _diffuse, Color _specular, float _shininess, float _reflectiveness);
+	PhongMaterial(Color _Ka, Color _diffuse, Color _specular, float _shininess, float _reflectiveness,float _refractRatio);
 
 	virtual~PhongMaterial();
 	virtual Color sample(const CRay&_ray, const GVector3 &_position,  GVector3&_normal);
