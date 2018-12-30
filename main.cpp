@@ -31,6 +31,7 @@ namespace SceneToRender {
 	const float dx = 1.0f / WINDOW_WIDTH;
 	const float dy = 1.0f / WINDOW_HEIGHT;
 	const float dD = 255.0f / maxDepth;//灰阶，255--0，黑---白
+	Color imagebuffer[WINDOW_WIDTH][WINDOW_HEIGHT] = {};
 
 	CObject* scene = nullptr;
 
@@ -106,9 +107,9 @@ namespace SceneToRender {
 		camera = PerspectiveCamera(GVector3(horiz, 0, dep), GVector3(0, 0, -1), GVector3(0, 1, 0), 90);
 		light2 = PointLight(Color::white().multiply(3), GVector3(10, 20, 10), true);
 		destroyIfUsed();
-		//Triangle* triangle = new Triangle(GVector3(0,0,-10),  GVector3(4,-5,0), GVector3(-4, -5, 0));
+		Triangle* triangle = new Triangle(GVector3(0,0,-10),  GVector3(4,-5,0), GVector3(-4, -5, 0));
 		//Triangle* triangle = new Triangle(GVector3(0, 0, 0), GVector3(4, -5, 0), GVector3(-4, -5, 0));
-		Triangle* triangle = new Triangle(GVector3(-4, -5, 0),  GVector3(4,-5,0), GVector3(0, 0, -10));
+		//Triangle* triangle = new Triangle(GVector3(-4, -5, 0),  GVector3(4,-5,0), GVector3(0, 0, -10));
 		triangle->material = (new PhongMaterial(Color::green(), Color::blue(), 16, 0.25f));
 		scene = triangle;
 	}
@@ -244,7 +245,7 @@ namespace SceneToRender {
 			{
 				GVector3 refle_directon = result.normal*(-2 * result.normal.dotMul(_ray.getDirection()));
 				CRay refle_ray = CRay(result.position, refle_directon);
-				Color reflectedColor = rayTraceRecursive(_object, refle_ray, _maxReflection - 1);
+				Color reflectedColor = SceneToRender::rayTraceRecursive(_object, refle_ray, _maxReflection - 1);
 				color = color.add(reflectedColor.multiply(reflectiveness));
 			}
 			return color;
@@ -457,7 +458,7 @@ namespace SceneToRender {
 					CRay lightray = CRay(result.position, result.position - light2.getPosition());
 					resultcolor = phongcalculate(result.object, ray, lightray, result.position, result.normal, lightShadowstrong);
 
-					Color color1 = rayTraceRecursive(scene, ray, maxReflect);
+					Color color1 = SceneToRender::rayTraceRecursive(scene, ray, maxReflect);
 					resultcolor.add(color1);
 
 					resultcolor.saturate();
@@ -475,11 +476,11 @@ namespace SceneToRender {
 		//CRay testa = CRay(GVector3(0, 0, 0), GVector3(0, 0, -1));
 		//IntersectResult resulta = scene->isIntersected(testa);
 		//Color resultcolor = rayTraceRecursive_NEW(scene, testa, maxReflect);
-		for (long y = 0; y < WINDOW_HEIGHT; ++y)
+		for (int y = 0; y < WINDOW_HEIGHT; ++y)
 		{
 			float sy = 1 - dy * y;
 			//double sy = 1 - dy * y;
-			for (long x = 0; x < WINDOW_WIDTH; ++x)
+			for (int x = 0; x < WINDOW_WIDTH; ++x)
 			{
 				float sx = dx * x;
 				//double sx = dx * x;
@@ -490,9 +491,21 @@ namespace SceneToRender {
 				{
 					Color resultcolor = rayTraceRecursive_NEW(scene, ray, maxReflect);
 					resultcolor.saturate();
-					glColor3f(resultcolor.R * 255.0, resultcolor.G * 255.0, resultcolor.B * 255.0);
-					glVertex2f(sx, sy);
+					imagebuffer[x][y]=resultcolor;
+				//	glColor3f(resultcolor.R * 255.0, resultcolor.G * 255.0, resultcolor.B * 255.0);
+				//	glVertex2f(sx, sy);
 				}
+			}
+		}
+		for (int y = 0; y < WINDOW_HEIGHT; ++y)
+		{
+			float sy = 1 - dy * y;
+			for (int x = 0; x < WINDOW_WIDTH; ++x)
+			{
+				float sx = dx * x;
+				Color resultcolor = imagebuffer[x][y];
+				glColor3f(resultcolor.R * 255.0, resultcolor.G * 255.0, resultcolor.B * 255.0);
+				glVertex2f(sx, sy);
 			}
 		}
 		glEnd();
@@ -568,6 +581,8 @@ void initScene(int w, int h)
 	glDepthFunc(GL_LEQUAL);//所作深度测试的类型
 	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);//告诉系统对透视进行修正
 }
+
+
 
 void display()
 {
@@ -842,155 +857,155 @@ void renderUnion()
 
 }
 
-//Color rayTraceRecursive(CObject* _object, CRay& _ray, int _maxReflection)
-//{
-//	IntersectResult result = _object->isIntersected(_ray);
-//	if (result.isHit)
-//	{
-//		float reflectiveness = result.object->material->getReflec();
-//		Color color = result.object->material->sample(_ray, result.position, result.normal);
-//		color = color.multiply(1 - reflectiveness);
-//		if (reflectiveness > 0 && _maxReflection > 0)
-//		{
-//			GVector3 refle_directon = result.normal*(-2 * result.normal.dotMul(_ray.getDirection()));
-//			CRay refle_ray = CRay(result.position, refle_directon);
-//			Color reflectedColor = rayTraceRecursive(_object, refle_ray, _maxReflection - 1);
-//			color = color.add(reflectedColor.multiply(reflectiveness));
-//		}
-//		return color;
-//	}
-//	else return Color::black();
-//
-//}
+Color rayTraceRecursive(CObject* _object, CRay& _ray, int _maxReflection)
+{
+	IntersectResult result = _object->isIntersected(_ray);
+	if (result.isHit)
+	{
+		float reflectiveness = result.object->material->getReflec();
+		Color color = result.object->material->sample(_ray, result.position, result.normal);
+		color = color.multiply(1 - reflectiveness);
+		if (reflectiveness > 0 && _maxReflection > 0)
+		{
+			GVector3 refle_directon = result.normal*(-2 * result.normal.dotMul(_ray.getDirection()));
+			CRay refle_ray = CRay(result.position, refle_directon);
+			Color reflectedColor = rayTraceRecursive(_object, refle_ray, _maxReflection - 1);
+			color = color.add(reflectedColor.multiply(reflectiveness));
+		}
+		return color;
+	}
+	else return Color::black();
 
-//void renderRecursive()
-//{
-//	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-//	glLoadIdentity();
-//	glTranslatef(-0.5f, -0.5f, -1.0f);
-//	glPointSize(2.0f);
-//
-//	PerspectiveCamera camera(GVector3(0, 10, 10), GVector3(0, -0.5, -1), GVector3(0, 1, 0), 90);
-//	Plane* plane1 = new Plane(GVector3(0, 1, 0), 1.0);
-//	CSphere* sphere1 = new CSphere(GVector3(-2, 5, -10), 5.0);
-//	CSphere* sphere2 = new CSphere(GVector3(5, 5, -10), 3.0);
-//
-//	plane1->material = new CheckerMaterial(0.1f,0.5f);
-//	sphere1->material = new PhongMaterial(Color::green(), Color::white(), 16,0.25f);
-//	sphere2->material = new PhongMaterial(Color::blue(), Color::white(), 16,0.25f);
-//
-//	Union scence;
-//	scence.push(plane1);
-//	scence.push(sphere1);
-//	scence.push(sphere2);
-//
-//	long maxDepth = 20;
-//	long maxReflect = 5;
-//	float dx = 1.0f / WINDOW_WIDTH;
-//	float dy = 1.0f / WINDOW_HEIGHT;
-//	float dDeep = 255.0f / maxDepth;
-//	glBegin(GL_POINTS);
-//	for (long y = 0; y < WINDOW_HEIGHT; y++)
-//	{
-//		float sy = 1 - dy * y;
-//		for (long x = 0; x < WINDOW_WIDTH; x++)
-//		{
-//
-//			float sx = 1 - dx * x;
-//			CRay ray(camera.generateRay(sx, sy));
-//			IntersectResult result = scence.isIntersected(ray);
-//			if (result.isHit)
-//			{
-//				
-//				Color color = rayTraceRecursive(&scence, ray, maxReflect);
-//				//Color color = result.object->material->sample(ray, result.position, result.normal);
-//				color.saturate();
-//				//color.show();
-//				glColor3ub(color.R * 255, color.G * 255, color.B * 255);
-//				glVertex2f(sx, sy);
-//			}
-//		}
-//	}
-//	glEnd();
-//	glFlush();
-//}
+}
 
-//void renderLight()
-//{
-//	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-//	glLoadIdentity();
-//	glTranslatef(-0.5f, -0.5f, -1.0f);
-//	glPointSize(2.0f);
-//
-//	Union scene;
-//	PerspectiveCamera camera(GVector3(0, 10, 10), GVector3(0, 0, -1), GVector3(0, 1, 0), 90);
-//	Plane*plane1 = new Plane(GVector3(0, 1, 0), 0.0);
-//	Plane*plane2 = new Plane(GVector3(0, 0, 1), -50);
-//	Plane*plane3 = new Plane(GVector3(1, 0, 0), -20);
-//	CSphere* sphere1 = new CSphere(GVector3(0, 10, -10), 10.0);
-//
-//	//	plane1->material = new CheckerMaterial(0.1f, 0.5f);
-//	//	plane2->material = new CheckerMaterial(0.1f, 0.5f);
-//	//	plane3->material = new CheckerMaterial(0.1f, 0.5f);
-//
-//	plane1->material = new PhongMaterial(Color::red(), Color::white(), 0.1, 0.01f);
-//	plane2->material = new PhongMaterial(Color::blue(), Color::white(), 0.1, 0.01f);
-//	plane3->material = new PhongMaterial(Color::white(), Color::white(), 0.1, 0.01f);
-//
-//
-//
-//	sphere1->material = new PhongMaterial(Color::green(), Color::white(), 5, 0.25f);
-//
-//	DirectLight light1(Color::white(), GVector3(-1.75, -2, -1.5), true);
-//	//PointLight light2(Color::white().multiply(200), GVector3(10, 20, 10), true);
-//
-//	scene.push(plane1);
-//	//scene.push(plane2);
-//	//scene.push(plane3);
-//	scene.push(sphere1);
-//	long maxDepth = 20;
-//	long maxReflect = 5;
-//	float dx = 1.0f / WINDOW_WIDTH;
-//	float dy = 1.0f / WINDOW_HEIGHT;
-//	float dD = 255.0f / maxDepth;
-//
-//	//time_t timeBegin, timeEnd;
-//	//timeBegin = time(NULL);
-//	MyTimeCount::countTime(false);
-//
-//	glBegin(GL_POINTS);
-//	for (long y = 0; y < WINDOW_HEIGHT; ++y)
-//	{
-//		float sy = 1 - dy * y;
-//		for (long x = 0; x < WINDOW_WIDTH; ++x)
-//		{
-//			float sx = dx * x;
-//			CRay ray(camera.generateRay(sx, sy));
-//			IntersectResult result = scene.isIntersected(ray);
-//
-//			if (result.isHit)
-//			{
-//				Color color1 = rayTraceRecursive(&scene, ray, maxReflect);
-//				Color color2= light1.intersect(scene, result);
-//				Color color = color1.modulate(color2);
-//
-//				
-//				//Color color = light1.intersect(scene, result);
-//
-//				color.saturate();
-//			//	color.show();
-//				//color = color.normalize();
-//				glColor3ub(color.R * 255, color.G * 255, color.B * 255);
-//				glVertex2f(sx, sy);
-//			}
-//		}
-//	}
-//	glEnd();
-//	glFlush();
-//	//timeEnd = time(NULL);
-//	//cout << "用时：" << timeEnd - timeBegin << endl;
-//	MyTimeCount::countTime(true);
-//}
+void renderRecursive()
+{
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glLoadIdentity();
+	glTranslatef(-0.5f, -0.5f, -1.0f);
+	glPointSize(2.0f);
+
+	PerspectiveCamera camera(GVector3(0, 20, 10), GVector3(0, -0.5, -1), GVector3(0, 1, 0), 90);
+	Plane* plane1 = new Plane(GVector3(0, 1, 0), 1.0);
+	CSphere* sphere1 = new CSphere(GVector3(-2, 5, -10), 5.0);
+	CSphere* sphere2 = new CSphere(GVector3(5, 5, -10), 3.0);
+
+	plane1->material = new CheckerMaterial(0.1f,0.5f);
+	sphere1->material = new PhongMaterial(Color::green(), Color::white(), 16,0.25f);
+	sphere2->material = new PhongMaterial(Color::blue(), Color::white(), 16,0.25f);
+
+	Union scence;
+	scence.push(plane1);
+	scence.push(sphere1);
+	scence.push(sphere2);
+
+	long maxDepth = 20;
+	long maxReflect = 5;
+	float dx = 1.0f / WINDOW_WIDTH;
+	float dy = 1.0f / WINDOW_HEIGHT;
+	float dDeep = 255.0f / maxDepth;
+	glBegin(GL_POINTS);
+	for (long y = 0; y < WINDOW_HEIGHT; y++)
+	{
+		float sy = 1 - dy * y;
+		for (long x = 0; x < WINDOW_WIDTH; x++)
+		{
+
+			float sx = 1 - dx * x;
+			CRay ray(camera.generateRay(sx, sy));
+			IntersectResult result = scence.isIntersected(ray);
+			if (result.isHit)
+			{
+				
+				Color color = rayTraceRecursive(&scence, ray, maxReflect);
+				//Color color = result.object->material->sample(ray, result.position, result.normal);
+				color.saturate();
+				//color.show();
+				glColor3ub(color.R * 255, color.G * 255, color.B * 255);
+				glVertex2f(sx, sy);
+			}
+		}
+	}
+	glEnd();
+	glFlush();
+}
+
+void renderLight()
+{
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glLoadIdentity();
+	glTranslatef(-0.5f, -0.5f, -1.0f);
+	glPointSize(2.0f);
+
+	Union scene;
+	PerspectiveCamera camera(GVector3(0, 10, 10), GVector3(0, 0, -1), GVector3(0, 1, 0), 90);
+	Plane*plane1 = new Plane(GVector3(0, 1, 0), 0.0);
+	Plane*plane2 = new Plane(GVector3(0, 0, 1), -50);
+	Plane*plane3 = new Plane(GVector3(1, 0, 0), -20);
+	CSphere* sphere1 = new CSphere(GVector3(0, 10, -10), 10.0);
+
+	//	plane1->material = new CheckerMaterial(0.1f, 0.5f);
+	//	plane2->material = new CheckerMaterial(0.1f, 0.5f);
+	//	plane3->material = new CheckerMaterial(0.1f, 0.5f);
+
+	plane1->material = new PhongMaterial(Color::red(), Color::white(), 0.1, 0.01f);
+	plane2->material = new PhongMaterial(Color::blue(), Color::white(), 0.1, 0.01f);
+	plane3->material = new PhongMaterial(Color::white(), Color::white(), 0.1, 0.01f);
+
+
+
+	sphere1->material = new PhongMaterial(Color::green(), Color::white(), 5, 0.25f);
+
+	DirectLight light1(Color::white(), GVector3(-1.75, -2, -1.5), true);
+	//PointLight light2(Color::white().multiply(200), GVector3(10, 20, 10), true);
+
+	scene.push(plane1);
+	scene.push(plane2);
+	scene.push(plane3);
+	scene.push(sphere1);
+	long maxDepth = 20;
+	long maxReflect = 5;
+	float dx = 1.0f / WINDOW_WIDTH;
+	float dy = 1.0f / WINDOW_HEIGHT;
+	float dD = 255.0f / maxDepth;
+
+	//time_t timeBegin, timeEnd;
+	//timeBegin = time(NULL);
+	MyTimeCount::countTime(false);
+
+	glBegin(GL_POINTS);
+	for (long y = 0; y < WINDOW_HEIGHT; ++y)
+	{
+		float sy = 1 - dy * y;
+		for (long x = 0; x < WINDOW_WIDTH; ++x)
+		{
+			float sx = dx * x;
+			CRay ray(camera.generateRay(sx, sy));
+			IntersectResult result = scene.isIntersected(ray);
+
+			if (result.isHit)
+			{
+				Color color1 = rayTraceRecursive(&scene, ray, maxReflect);
+				Color color2= light1.intersect(scene, result);
+				Color color = color1.modulate(color2);
+
+				
+				//Color color = light1.intersect(scene, result);
+
+				color.saturate();
+			//	color.show();
+				//color = color.normalize();
+				glColor3ub(color.R * 255, color.G * 255, color.B * 255);
+				glVertex2f(sx, sy);
+			}
+		}
+	}
+	glEnd();
+	glFlush();
+	//timeEnd = time(NULL);
+	//cout << "用时：" << timeEnd - timeBegin << endl;
+	MyTimeCount::countTime(true);
+}
 
 
 //void renderPointLight()
@@ -1000,7 +1015,7 @@ void renderUnion()
 //	glTranslatef(-0.5f, -0.5f, -1.0f);
 //	glPointSize(2.0f);
 //
-//	Union scene;
+//	CObject* scene;
 //	PerspectiveCamera camera(GVector3(0, 10, 10), GVector3(0, 0, -1), GVector3(0, 1, 0), 90);
 //	Plane*plane1 = new Plane(GVector3(0, 1, 0), 0.0);
 //	Plane*plane2 = new Plane(GVector3(0, 0, 1), -50);
@@ -1019,11 +1034,12 @@ void renderUnion()
 //	
 //	//DirectLight light1(Color::white().multiply(0.5), GVector3(-1.75, -2, -1.5), true);
 //	PointLight light2(Color::white().multiply(200), GVector3(10, 20, 10), true);
-//
-//	scene.push(plane1);
-//	scene.push(plane2);
-//	scene.push(plane3);
-//	scene.push(sphere1);
+//	Union * uniona;
+//	uniona->push(plane1);
+//	uniona->push(plane2);
+//	uniona->push(plane3);
+//	uniona->push(sphere1);
+//	scene = uniona;
 //	long maxDepth = 20;
 //	long maxReflect = 5;
 //	float dx = 1.0f / WINDOW_WIDTH;
@@ -1045,7 +1061,7 @@ void renderUnion()
 //			float sx = dx * x;
 //			//double sx = dx * x;
 //			CRay ray(camera.generateRay(sx, sy));
-//			IntersectResult result = scene.isIntersected(ray);
+//			IntersectResult result = scene->isIntersected(ray);
 //
 //			if (result.isHit)
 //			{
@@ -1120,24 +1136,25 @@ int main(int argc,char*argv[]) {
 	//glutDisplayFunc(display);
 	
 	//glutDisplayFunc(renderDepth2);
+	//glutDisplayFunc(renderDepth3);
 	//glutDisplayFunc(renderUnion);
 	//glutDisplayFunc(renderRecursive);
 	//glutDisplayFunc(renderLight);
-	//glutDisplayFunc(renderPointLight);
+
 	//glutDisplayFunc(renderTriangle);
 
 
 	//SceneToRender::initWithModel();
 	//SceneToRender::initWithTriangle();
-	//SceneToRender::initWithSphere();
-	SceneToRender::initWithTwoSphere();
+	SceneToRender::initWithSphere();
+	//SceneToRender::initWithTwoSphere();
 	//SceneToRender::initWith4Triangle();
 
 	//glutDisplayFunc(SceneToRender::renderGray);
 	//glutDisplayFunc(SceneToRender::renderModel);
-	//glutDisplayFunc(SceneToRender::renderModelwithPointLight);
+	glutDisplayFunc(SceneToRender::renderModelwithPointLight);
 	
-	glutDisplayFunc(SceneToRender::renderModelwithRayTrace);
+	//glutDisplayFunc(SceneToRender::renderModelwithRayTrace);
 
 	glutReshapeFunc(windowChangeSize2);
 	glutMainLoop();

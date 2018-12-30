@@ -8,7 +8,7 @@
 #include<algorithm>
 
 //
-static GVector3 _lightray = GVector3(-1, -1, -1).normalize();
+static GVector3 _lightray = GVector3(1, 1, 1).normalize();
 static Color LightColor = Color::white();
 
 static Color dauflt_Ka = Color(0.1, 0.1, 0.1);

@@ -21,7 +21,7 @@ GVector3 PointLight::getPosition()
 	return position;
 }
 
-//通过光线与场景的相交结果计算光照结果
+////通过光线与场景的相交结果计算光照结果
 //Color PointLight::intersect(Union* scence, IntersectResult &rayResult)
 //{
 //	//生产shadowRay的修正值
