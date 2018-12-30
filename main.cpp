@@ -76,6 +76,19 @@ namespace SceneToRender {
 		}
 	}
 
+
+	void initWithSphere2()
+	{
+		destroyIfUsed();
+		camera = PerspectiveCamera(GVector3(horiz, 0, dep), GVector3(0, 0, -1), GVector3(0, 1, 0), 90);
+		light2 = PointLight(Color::white().multiply(2), GVector3(10, 10, 10), true);
+		CSphere* sphere1 = new CSphere(GVector3(0, 0, -10), 3);
+		sphere1->material = (new PhongMaterial(Color::green(), Color::white(), 2, 0.25, 0.5));
+
+		scene = sphere1;
+
+		scene = scene;
+	}
 	void initWithSphere()
 	{
 		destroyIfUsed();
@@ -133,6 +146,7 @@ namespace SceneToRender {
 		//sphere1->material = new PhongMaterial(Color::green(), Color::white(), 16);
 		//sphere2->material = new PhongMaterial(Color::blue(), Color::white(), 16);
 		sphere1->material = new PhongMaterial(Color(0.1,0.1,0.1), Color::black(), 2,0,0.9f);
+		//sphere1->material = new PhongMaterial(Color(0.3, 0.4,0.5), Color::white(), 2, 0.3);
 		sphere2->material = new PhongMaterial(Color::blue(), Color::white(), 16,0.25f);
 		sphere3->material = new PhongMaterial(Color::red(), Color::white(), 16, 0.25f);
 
@@ -1146,15 +1160,16 @@ int main(int argc,char*argv[]) {
 
 	//SceneToRender::initWithModel();
 	//SceneToRender::initWithTriangle();
-	SceneToRender::initWithSphere();
-	//SceneToRender::initWithTwoSphere();
+	//SceneToRender::initWithSphere();
+	//SceneToRender::initWithSphere2();
+	SceneToRender::initWithTwoSphere();
 	//SceneToRender::initWith4Triangle();
 
 	//glutDisplayFunc(SceneToRender::renderGray);
 	//glutDisplayFunc(SceneToRender::renderModel);
-	glutDisplayFunc(SceneToRender::renderModelwithPointLight);
+	//glutDisplayFunc(SceneToRender::renderModelwithPointLight);
 	
-	//glutDisplayFunc(SceneToRender::renderModelwithRayTrace);
+	glutDisplayFunc(SceneToRender::renderModelwithRayTrace);
 
 	glutReshapeFunc(windowChangeSize2);
 	glutMainLoop();

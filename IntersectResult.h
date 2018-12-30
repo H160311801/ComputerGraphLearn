@@ -7,14 +7,11 @@
 class CObject;
 struct IntersectResult
 {
-	
-	//Plane object;
-	//
-	CObject* object;
-	float distance;
-	bool isHit;
-	GVector3 position;
-	GVector3 normal;
+	CObject* object;//交点所在的对象
+	float distance;//到交点的距离
+	bool isHit;	//是否相交
+	GVector3 position;	//交点坐标
+	GVector3 normal;	//交点法向
 	static inline IntersectResult noHit() { return IntersectResult(); }
 	IntersectResult() :object(NULL), isHit(false) {
 	};
